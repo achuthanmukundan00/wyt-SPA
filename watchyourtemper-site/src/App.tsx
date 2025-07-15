@@ -36,6 +36,11 @@ const App: React.FC = () => {
         <Route path="/machine" element={<FeedTheMachine />} />
       </Routes>
       <GlitchCursor />
+      <div className="corner-tag bottom-left">
+        in the end, they won't remember you<br />
+        ver: 1.0.0<br />
+        © 2025 watchyourtemper
+      </div>
     </Router>
   );
 };

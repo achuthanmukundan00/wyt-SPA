@@ -1,7 +1,7 @@
 @font-face {
-  font-family: 'Rinter';
-  src: url('/fonts/Rinter.woff2') format('woff2'),
-       url('/fonts/Rinter.woff') format('woff');
+  font-family: "Rinter";
+  src: url("/fonts/Rinter.woff2") format("woff2"),
+    url("/fonts/Rinter.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -11,11 +11,12 @@
   box-sizing: border-box;
 }
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   background-color: #000;
-  font-family: 'Rinter', sans-serif;
+  font-family: "Rinter", sans-serif;
   color: white;
   height: 100%;
   overflow-x: hidden;
@@ -28,7 +29,8 @@ a {
   color: inherit;
 }
 
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
   margin: 0;
 }
@@ -48,7 +50,7 @@ h1, h2 {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: url('/images/wyt-burying-5b.png') center/cover no-repeat fixed;
+  background: url("/images/wyt-burying-5b.png") center/cover no-repeat fixed;
   filter: brightness(0.7) contrast(1.2);
 }
 
@@ -71,20 +73,6 @@ h1, h2 {
   text-align: center;
 }
 
-.avatar {
-  width: 120px;
-  height: 120px;
-  border-radius: 100%;
-  object-fit: cover;
-  border: 1px solid #a42117;
-  box-shadow: 0 0 10px rgba(164, 33, 23, 0.4);
-  transition: transform 0.3s ease;
-}
-
-.avatar:hover {
-  transform: scale(1.05);
-}
-
 .links {
   display: flex;
   flex-direction: column;
@@ -99,7 +87,7 @@ h1, h2 {
   border: 1px solid #a42117;
   padding: 0.75rem 1.2rem;
   border-radius: 8px;
-  font-family: 'Rinter';
+  font-family: "Rinter";
   font-size: clamp(0.85rem, 2.5vw, 0.95rem);
   color: white;
   transition: all 0.3s ease;
@@ -124,11 +112,38 @@ h1, h2 {
 
 /* Glitch + flicker animations */
 @keyframes flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
     opacity: 1;
   }
-  20%, 24%, 55% {
-    opacity: 0.4;
+  20%,
+  24%,
+  55% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes flickerSmall {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    opacity: 0.9;
+  }
+  20%,
+  24%,
+  55% {
+    opacity: 0.6;
   }
 }
 
@@ -171,14 +186,13 @@ h1, h2 {
   }
 }
 
-
 .nav-top {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   padding: 1rem 1.5rem;
-  background: black;
+  background: transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -215,12 +229,24 @@ h1, h2 {
 
 /* === SHAKE KEYFRAMES === */
 @keyframes rageShake {
-  0% { transform: translate(0); }
-  20% { transform: translate(-0.5px, 0.5px); }
-  40% { transform: translate(-1px, -0.5px); }
-  60% { transform: translate(1px, 1px); }
-  80% { transform: translate(0.6px, -1px); }
-  100% { transform: translate(0); }
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-0.5px, 0.5px);
+  }
+  40% {
+    transform: translate(-1px, -0.5px);
+  }
+  60% {
+    transform: translate(1px, 1px);
+  }
+  80% {
+    transform: translate(0.6px, -1px);
+  }
+  100% {
+    transform: translate(0);
+  }
 }
 
 .burger {
@@ -271,8 +297,8 @@ h1, h2 {
   height: 100vh;
   background-image: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,0.01) 0px,
-    rgba(255,255,255,0.01) 1px,
+    rgba(255, 255, 255, 0.01) 0px,
+    rgba(255, 255, 255, 0.01) 1px,
     transparent 1px,
     transparent 2px
   );
@@ -282,22 +308,12 @@ h1, h2 {
 }
 
 @keyframes flicker-screen {
-  0%, 100% { opacity: 0.06; }
-  50% { opacity: 0.1; }
-}
-
-@media (hover: hover) {
-  body {
-    cursor: url('/assets/images/cursor.png'), auto;
+  0%,
+  100% {
+    opacity: 0.06;
   }
-
-  body:hover {
-    animation: cursor-glitch 0.2s infinite;
-  }
-
-  @keyframes cursor-glitch {
-    0%, 100% { cursor: url('/assets/images/cursor.png'), auto; }
-    50% { cursor: crosshair; }
+  50% {
+    opacity: 0.1;
   }
 }
 
@@ -330,7 +346,7 @@ h1, h2 {
 }
 
 .bg-burying {
-  background: url('/images/wyt-burying-5b.png') center/cover no-repeat fixed;
+  background: url("/images/wyt-burying-5b.png") center/cover no-repeat fixed;
   filter: brightness(0.65) contrast(1.2);
   position: absolute;
   inset: 0;
@@ -345,7 +361,6 @@ h1, h2 {
   justify-content: center;
   text-align: center;
 }
-
 
 .feed-page {
   background-color: black;
@@ -364,8 +379,8 @@ h1, h2 {
   z-index: 999;
   background-image: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,0.01) 0px,
-    rgba(255,255,255,0.01) 1px,
+    rgba(255, 255, 255, 0.01) 0px,
+    rgba(255, 255, 255, 0.01) 1px,
     transparent 1px,
     transparent 2px
   );
@@ -400,7 +415,7 @@ h1, h2 {
 }
 
 .feed-title {
-  font-family: 'Rinter';
+  font-family: "Rinter";
   font-size: clamp(1.4rem, 3vw, 2.2rem);
   color: white;
   animation: flicker 2.5s infinite;
@@ -418,22 +433,37 @@ h1, h2 {
   gap: 1rem;
 }
 
+
+
 .feed-btn {
-  font-family: 'Rinter';
-  background: rgba(0, 0, 0, 0.6);
-  border: 1px solid #e54235;
-  color: white;
-  padding: 0.75rem 1.2rem;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  background-color: rgba(20, 20, 20, 0.75);
+  border: none;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  color: #ccc;
+  transition: filter 0.2s ease, background-color 0.3s ease;
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .feed-btn:hover {
-  background: #000000;
-  transform: scale(1.05) translateX(1px);
-  color: #e54235;
-  box-shadow: 0 0 6px rgba(229, 66, 53, 0.5);
+  filter: brightness(1.1);
+  background-color: rgba(50, 50, 50, 0.5);
+}
+
+.btn-icon {
+  width: 2rem;
+  height: 2rem;
+  filter: brightness(0.8) contrast(1.2);
+  transition: transform 0.3s ease;
+}
+
+.feed-btn:hover .btn-icon {
+  transform: scale(1.1);
+  filter: brightness(1) drop-shadow(0 0 3px rgba(229, 66, 53, 0.4));
 }
 
 .join {
@@ -448,13 +478,13 @@ h1, h2 {
   text-transform: lowercase;
   letter-spacing: 0.08em;
   text-align: center;
-  font-family: 'Rinter';
-  animation: flicker 2.5s infinite;
+  font-family: "Rinter";
+  animation: flicker 1s infinite;
   user-select: none;
 }
 
 .glitch-link:hover {
-    transform: rotate(-2.2deg) translateX(2vw);
+  transform: rotate(-2.2deg) translateX(2vw);
 }
 
 .glitch-link::before,
@@ -490,29 +520,256 @@ h1, h2 {
 }
 
 @keyframes glitch-red {
-  0% { clip: rect(0, 9999px, 0, 0); }
-  5% { clip: rect(0, 9999px, 20px, 0); }
-  10% { clip: rect(0, 9999px, 0, 0); }
-  15% { clip: rect(15px, 9999px, 40px, 0); }
-  100% { clip: rect(0, 9999px, 0, 0); }
+  0% {
+    clip: rect(0, 9999px, 0, 0);
+  }
+  5% {
+    clip: rect(0, 9999px, 20px, 0);
+  }
+  10% {
+    clip: rect(0, 9999px, 0, 0);
+  }
+  15% {
+    clip: rect(15px, 9999px, 40px, 0);
+  }
+  100% {
+    clip: rect(0, 9999px, 0, 0);
+  }
 }
 
 @keyframes glitch-cyan {
-  0% { clip: rect(0, 9999px, 0, 0); }
-  10% { clip: rect(5px, 9999px, 25px, 0); }
-  20% { clip: rect(0, 9999px, 0, 0); }
-  30% { clip: rect(10px, 9999px, 30px, 0); }
-  100% { clip: rect(0, 9999px, 0, 0); }
+  0% {
+    clip: rect(0, 9999px, 0, 0);
+  }
+  10% {
+    clip: rect(5px, 9999px, 25px, 0);
+  }
+  20% {
+    clip: rect(0, 9999px, 0, 0);
+  }
+  30% {
+    clip: rect(10px, 9999px, 30px, 0);
+  }
+  100% {
+    clip: rect(0, 9999px, 0, 0);
+  }
 }
 
 @keyframes glitch-red-intense {
-  0% { transform: translate(-2px, -2px); }
-  50% { transform: translate(2px, 2px); }
-  100% { transform: translate(-2px, -2px); }
+  0% {
+    transform: translate(-2px, -2px);
+  }
+  50% {
+    transform: translate(2px, 2px);
+  }
+  100% {
+    transform: translate(-2px, -2px);
+  }
 }
 
 @keyframes glitch-cyan-intense {
-  0% { transform: translate(2px, 2px); }
-  50% { transform: translate(-2px, -2px); }
-  100% { transform: translate(2px, 2px); }
+  0% {
+    transform: translate(2px, 2px);
+  }
+  50% {
+    transform: translate(-2px, -2px);
+  }
+  100% {
+    transform: translate(2px, 2px);
+  }
 }
+
+.machine-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+  padding: 10vh 2rem 6vh;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  .machine-wrapper {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 5vw;
+    padding-top: 12vh;
+  }
+}
+
+.machine-left img {
+  max-width: 90vw;
+  width: 320px;
+  border-radius: 6px;
+  object-fit: cover;
+  transform: rotate(-1.2deg) translateY(5px);
+}
+
+.machine-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+  transform: translateY(-12px);
+  max-width: 400px;
+}
+
+.machine-title {
+  font-weight: 400;
+  font-size: 2.5rem;
+  color: #eaeaea;
+  letter-spacing: -0.02em;
+  animation: dissolveText 8s ease-out forwards;
+  opacity: 0.9;
+}
+
+@keyframes dissolveText {
+  0% {
+    opacity: 0;
+    filter: blur(6px);
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0.92;
+    filter: blur(0.5px);
+    transform: scale(1);
+  }
+}
+
+.machine-sub {
+  font-size: 0.7rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+}
+
+.machine-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  filter: brightness(0.65) contrast(1.2);
+}
+
+.scanlines::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.vignette {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, black 100%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.terminal-flicker {
+  animation: flicker 2.5s infinite;
+}
+
+.terminal-flicker.delay {
+  animation-delay: 1s;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  45% { opacity: 0.6; }
+  55% { opacity: 0.8; }
+  70% { opacity: 0.5; }
+  85% { opacity: 0.7; }
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid red;
+  white-space: nowrap;
+  animation: typing 3s steps(30) 1 normal both;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.blood-link {
+  color: #8a1f1f;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  background-color: transparent;
+}
+
+.blood-link:hover {
+  color: #e33838;
+  background-color: rgba(80, 0, 0, 0.05);
+}
+
+.corner-tag {
+  position: absolute;
+  font-size: 0.75rem;
+  opacity: 0.5;
+  font-family: 'Courier New', monospace;
+  color: #ccc;
+  z-index: 5;
+  text-align: left;
+  animation: flickerSmall 1s infinite;
+}
+
+.corner-tag::before,
+.corner-tag::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: transparent;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.corner-tag::before {
+  left: 1px;
+  text-shadow: -1px 0 #a42117;
+  animation: glitch-red 0.8s infinite linear alternate-reverse;
+}
+
+.corner-tag::after {
+  left: -1px;
+  text-shadow: 1px 0 cyan;
+  animation: glitch-cyan 0.8s infinite linear alternate-reverse;
+}
+
+.bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+
