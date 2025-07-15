@@ -1,69 +1,127 @@
-# React + TypeScript + Vite
+# WATCHYOURTEMPER
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Your rage is sacred. Let it speak.**
 
-Currently, two official plugins are available:
+This is the official interactive website for [WatchYourTemper](https://www.instagram.com/watchyourtemper), a mythic post-club/industrial electronic project exploring emotional repression, psycho-horror, and sacred catharsis. The site serves as both a cinematic landing portal and a fractured digital altar.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🕳 Overview
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Built as a **React + Vite single-page application**, this interface merges:
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Cinematic background video loops
+- Ambient scanlines, corruption FX, and digital decay
+- A ritualistic UI for streaming platform selection
+- Mailing list integration (the Inner Circle)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+It prioritizes **immersive continuity**, keeping audio, visuals, and interaction coherent across the entire experience.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🛠 Tech Stack
+
+| Layer        | Technology              |
+|--------------|--------------------------|
+| Frontend     | React (TypeScript + Vite) |
+| Styling      | Custom CSS (no Tailwind) |
+| Assets       | MP4 background loops, SVG/PNG icons, custom overlays |
+| Deployment   | GitHub Pages / Vercel / Netlify (recommended) |
+
+---
+
+## 🌑 File Structure (Core)
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+/
+├── public/
+│   ├── assets/
+│   │   ├── videos/        ← Background video loops
+│   │   ├── textures/      ← Scanlines / chromatic overlays
+│   │   └── icons/         ← Streaming platform icons
+├── src/
+│   ├── components/
+│   │   └── FeedTheMachine.tsx  ← Main ritual interface
+│   ├── styles/
+│   │   └── index.css      ← Global brutalist styles
+│   └── main.tsx
+├── index.html
+└── README.md
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+````
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🧪 Development
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/your-username/watchyourtemper.git
+cd watchyourtemper
+````
+
+### 2. Install dependencies
+
+```bash
+npm install
 ```
+
+### 3. Run the dev server
+
+```bash
+npm run dev
+```
+
+---
+
+## 🧟‍♀️ Design Philosophy
+
+This site is not a product — it’s a **ritual**.
+
+No unnecessary hover states. No rounded corners. No algorithm-chasing fluff.
+
+Instead, it leans into:
+
+* **Corruption** over clarity
+* **Silence** over spectacle
+* **Feeling** over functionality
+
+---
+
+## 🩸 Inner Circle
+
+This site links to a private supporters' mailing list through [MailerLite](https://www.mailerlite.com/), where listeners receive exclusive content, Bandcamp codes, and early access to rituals.
+
+---
+
+## 📦 Deployment
+
+Recommended: [Vercel](https://vercel.com/) or [Netlify](https://netlify.com/)
+
+Build:
+
+```bash
+npm run build
+```
+
+Deploy the `dist/` folder to your static host of choice.
+
+---
+
+## ⚠️ License
+
+This codebase is © 2025 WatchYourTemper (Achuthan Mukundan). All rights reserved.
+
+If you're inspired by the ritual — cite it, don’t steal it.
+
+---
+
+## 🕷 Credits
+
+* Visuals & Creative Direction: [@watchyourtemper](https://www.instagram.com/watchyourtemper)
+* Ritual Interface: Built with intention and decay
+
+---
+
+> *In the end, they won't remember you.
