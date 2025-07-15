@@ -26,7 +26,7 @@ const AudioPlayer: React.FC = () => {
     <>
       <audio ref={audioRef} src="/audio/s11_burial_loop_A.mp3" autoPlay loop />
       <button id="mute-btn" onClick={toggleMute}>
-        {muted ? 'MUSIC MUTED' : 'MUTE MUSIC'}
+        {muted ? '🔇' : '🔊'}
       </button>
     </>
   );

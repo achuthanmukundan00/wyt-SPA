@@ -22,6 +22,7 @@ html {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  cursor: none;
 }
 
 a {
@@ -657,40 +658,6 @@ h2 {
 
 .terminal-flicker.delay {
   animation-delay: 1s;
-}
-
-.corner-tag {
-  position: absolute;
-  font-size: 0.75rem;
-  opacity: 0.5;
-  color: #fff7f76d;
-  z-index: 5;
-  text-align: left;
-  animation: flickerSmall 1s infinite;
-}
-
-.corner-tag::before,
-.corner-tag::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: transparent;
-  pointer-events: none;
-  opacity: 0.7;
-}
-
-.corner-tag::before {
-  left: 1px;
-  text-shadow: -1px 0 #a42117;
-  animation: glitch-red 0.8s infinite linear alternate-reverse;
-}
-
-.corner-tag::after {
-  left: -1px;
-  text-shadow: 1px 0 cyan;
-  animation: glitch-cyan 0.8s infinite linear alternate-reverse;
 }
 
 .bottom-left {
