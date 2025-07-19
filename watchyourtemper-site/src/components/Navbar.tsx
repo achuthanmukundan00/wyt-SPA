@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       <div className="nav-right">
-        <a href="https://dashboard.mailerlite.com/forms/1434970/150992102536250799/share"
+        <a href="/join"
            target="_blank"
            rel="noopener noreferrer"
            >JOIN</a>
