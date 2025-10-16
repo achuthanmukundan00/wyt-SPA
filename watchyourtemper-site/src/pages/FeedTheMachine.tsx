@@ -21,6 +21,10 @@ const FeedTheMachine: React.FC = () => {
           <p className="machine-sub">CHOOSE YOUR WEAPON</p>
 
           <div className="machine-links">
+            <a className="feed-btn" href="https://watchyourtemper.bandcamp.com" target="_blank">
+              <img src="/icons/bandcamp.png" alt="Bandcamp" className="btn-icon" />
+              BANDCAMP
+            </a>
             <a className="feed-btn" href="https://open.spotify.com/artist/4J2nrkMqpsfDQcZgSalbht?si=0BOws4dHSginwoO28iy90A" target="_blank">
               <img src="/icons/spotify.png" alt="Spotify" className="btn-icon" />
               SPOTIFY
@@ -36,10 +40,6 @@ const FeedTheMachine: React.FC = () => {
             <a className="feed-btn" href="https://tidal.com/browse/artist/50451699?u" target="_blank">
               <img src="/icons/tidal.png" alt="Tidal" className="btn-icon" />
               TIDAL
-            </a>
-            <a className="feed-btn" href="https://watchyourtemper.bandcamp.com" target="_blank">
-              <img src="/icons/bandcamp.png" alt="Bandcamp" className="btn-icon" />
-              BANDCAMP
             </a>
           </div>
         </div>
