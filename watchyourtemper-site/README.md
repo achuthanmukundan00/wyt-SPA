@@ -2,7 +2,7 @@
 
 **Your rage is sacred. Let it speak.**
 
-This is the official interactive website for [WatchYourTemper](https://www.instagram.com/watchyourtemper), a mythic post-club/industrial electronic project exploring emotional repression, psycho-horror, and sacred catharsis. The site serves as both a cinematic landing portal and a fractured digital altar.
+This is the official interactive website for [WatchYourTemper](https://www.instagram.com/watchyourtemper)
 
 ---
 
