@@ -17,7 +17,7 @@ const FeedTheMachine: React.FC = () => {
         <div className="machine-divider" />
 
         <div className="machine-right">
-          <h2 className="machine-title terminal-flicker glitch-text">YOUR RAGE IS SACRED. LET IT SPEAK.</h2>
+          <h2 className="machine-title terminal-flicker glitch-text">THIS IS WHERE YOU START FIGHTING FOR AIR.</h2>
           <p className="machine-sub">CHOOSE YOUR WEAPON</p>
 
           <div className="machine-links">
