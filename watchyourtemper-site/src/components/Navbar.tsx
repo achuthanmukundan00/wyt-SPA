@@ -1,13 +1,18 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import "../styles/index.css";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import '../styles/index.css';
 
-const Navbar: React.FC = () => {
+type NavbarVariant = 'overlay' | 'solid';
+
+interface NavbarProps {
+  variant: NavbarVariant;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ variant }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const location = useLocation();
-  const isHome = location.pathname === "/";
+
   return (
-    <nav className={`nav-top ${!isHome ? "nav-solid" : ""}`}>
+    <nav className={`nav-top ${variant === 'solid' ? 'nav-solid' : ''}`}>
       <div className="nav-left">
         <Link to="/">
           <img
@@ -19,10 +24,9 @@ const Navbar: React.FC = () => {
       </div>
       <div className="nav-right">
         <Link to="/store">STORE</Link>
-        <a href="/join"
-           target="_blank"
-           rel="noopener noreferrer"
-           >JOIN</a>
+        <a href="/join" target="_blank" rel="noopener noreferrer">
+          JOIN
+        </a>
         <a
           href="https://www.instagram.com/watchyourtemper/"
           target="_blank"
@@ -57,7 +61,7 @@ const Navbar: React.FC = () => {
         <span />
         <span />
       </button>
-      <div className={`mobile-menu ${menuOpen ? "show" : ""}`}>
+      <div className={`mobile-menu ${menuOpen ? 'show' : ''}`}>
         <Link to="/" onClick={() => setMenuOpen(false)}>
           home
         </Link>
