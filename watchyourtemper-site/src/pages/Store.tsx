@@ -20,7 +20,6 @@ const Store: React.FC = () => {
               key={product.id}
               className="store-card"
               style={{
-                ['--card-offset' as string]: `${(index % 3) * 10 - 10}px`,
                 ['--flicker-delay' as string]: `${(index % 4) * 0.08}s`,
                 ['--hover-delay' as string]: `${60 + ((index * 17) % 55)}ms`,
               }}
