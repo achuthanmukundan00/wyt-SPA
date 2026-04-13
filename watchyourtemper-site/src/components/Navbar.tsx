@@ -17,6 +17,7 @@ const Navbar: React.FC = () => {
         </Link>
       </div>
       <div className="nav-right">
+        <Link to="/store">STORE</Link>
         <a href="/join"
            target="_blank"
            rel="noopener noreferrer"
@@ -58,6 +59,8 @@ const Navbar: React.FC = () => {
       <div className={`mobile-menu ${menuOpen ? "show" : ""}`}>
         <Link to="/">home</Link>
         <Link to="/machine">machine</Link>
+        <Link to="/store">store</Link>
+        <Link to="/join">join</Link>
       </div>
     </div>
   );
