@@ -58,10 +58,18 @@ const Navbar: React.FC = () => {
         <span />
       </button>
       <div className={`mobile-menu ${menuOpen ? "show" : ""}`}>
-        <Link to="/">home</Link>
-        <Link to="/machine">machine</Link>
-        <Link to="/store">store</Link>
-        <Link to="/join">join</Link>
+        <Link to="/" onClick={() => setMenuOpen(false)}>
+          home
+        </Link>
+        <Link to="/machine" onClick={() => setMenuOpen(false)}>
+          machine
+        </Link>
+        <Link to="/store" onClick={() => setMenuOpen(false)}>
+          store
+        </Link>
+        <Link to="/join" onClick={() => setMenuOpen(false)}>
+          join
+        </Link>
       </div>
     </nav>
   );
