@@ -979,7 +979,7 @@ h2 {
     right: 1rem;
     flex-direction: column;
     background: rgba(0, 0, 0, 0.95);
-    border: 1px solid #a42117;
+    border: 1px solid #1ea417;
     padding: 1rem 1.5rem;
     gap: 1rem;
     z-index: 99;
@@ -997,11 +997,12 @@ h2 {
   }
 
   .mobile-menu a:hover {
-    color: #a42117;
+    color: #17a41e;
   }
 
   .store-page {
     padding: calc(var(--nav-height-mobile) + 1.5rem) 1rem 2rem;
+    padding-top: calc(var(--nav-height-mobile) * 25);
   }
 
   .store-grid {
