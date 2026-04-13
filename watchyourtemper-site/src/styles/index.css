@@ -637,7 +637,7 @@ h2 {
 .feed-btn:hover {
   background: transparent;
   transform: translateX(2px);
-  color: #000000;
+  color: #00de46;
 }
 
 .glitch-text::before {
@@ -723,7 +723,6 @@ h2 {
   flex-direction: column;
   gap: 0.9rem;
   min-width: 0;
-  transform: translateY(var(--card-offset, 0));
   transition:
     border-color 0.18s steps(2, end),
     transform 0.18s ease var(--hover-delay, 80ms),
