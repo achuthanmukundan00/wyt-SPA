@@ -4,16 +4,11 @@ import '../styles/index.css';
 
 const Store: React.FC = () => {
   useEffect(() => {
-    document.title = 'WATCHYOURTEMPER | Store';
+    document.title = 'watchyourtemper | Store';
   }, []);
 
   return (
     <main className="store-page">
-      <section className="store-header">
-        <h1 className="store-title">STORE</h1>
-        <p className="store-subtitle">Official merch. Stripe checkout. No cart.</p>
-      </section>
-
       <section className="store-grid" aria-label="Store products">
         {storeProducts.map((product) => {
           const hasImage = Boolean(product.image);

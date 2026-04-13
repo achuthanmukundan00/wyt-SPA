@@ -10,7 +10,6 @@ const App: React.FC = () => {
   return (
     <Router>
       <AudioPlayer />
-      <div className="scanlines" />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
