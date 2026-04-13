@@ -37,7 +37,7 @@ const AudioPlayer: React.FC = () => {
 
   return (
     <>
-      <audio ref={audioRef} src="/audio/s11_burial_loop_A.mp3" />
+      <audio ref={audioRef} src="/audio/pressure_test_web.mp3" />
       {isInitialized && (
         <button id="mute-btn" onClick={toggleMute}>
           {muted ? '🔇' : '🔊'}
