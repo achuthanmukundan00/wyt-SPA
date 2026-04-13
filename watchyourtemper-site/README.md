@@ -95,6 +95,26 @@ This site links to a private supporters' mailing list through [MailerLite](https
 
 ---
 
+
+## 🛒 Store (Stripe Payment Links)
+
+The merch store is frontend-only and uses hosted Stripe Payment Links.
+
+- Edit product data in `src/data/storeProducts.ts`.
+- Paste each Stripe URL into `stripeUrl` and set `enabled: true` for products you want live.
+- Add product images to `public/assets/images/store/` and set each product `image` path (example: `/assets/images/store/watchyourtemper-tee.jpg`).
+- Store UI route/page lives at `src/pages/Store.tsx` and is available at `/store`.
+
+Files changed for this feature:
+- `src/data/storeProducts.ts`
+- `src/pages/Store.tsx`
+- `src/App.tsx`
+- `src/components/Navbar.tsx`
+- `src/styles/index.css`
+- `README.md`
+
+---
+
 ## 📦 Deployment
 
 Recommended: [Vercel](https://vercel.com/) or [Netlify](https://netlify.com/)

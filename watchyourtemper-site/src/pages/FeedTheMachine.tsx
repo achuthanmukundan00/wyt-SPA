@@ -3,12 +3,7 @@ import "../styles/index.css";
 const FeedTheMachine: React.FC = () => {
   return (
     <div className="feed-page dark-corner">
-      <video className="bg-video" autoPlay muted loop playsInline>
-        <source src="/assets/videos/buried-bg.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      <div className="grain-overlay" />
+      {/* <div className="grain-overlay" /> */}
       <div className="vignette" />
 
       <div className="machine-wrapper">
@@ -17,8 +12,8 @@ const FeedTheMachine: React.FC = () => {
         <div className="machine-divider" />
 
         <div className="machine-right">
-          <h2 className="machine-title terminal-flicker glitch-text">THIS IS WHERE YOU START FIGHTING FOR AIR.</h2>
-          <p className="machine-sub">CHOOSE YOUR WEAPON</p>
+          <h2 className="machine-title terminal-flicker glitch-text">ENTER HERE.</h2>
+          <p className="machine-sub">SELECT A CHANNEL</p>
 
           <div className="machine-links">
             <a className="feed-btn" href="https://watchyourtemper.bandcamp.com" target="_blank">
