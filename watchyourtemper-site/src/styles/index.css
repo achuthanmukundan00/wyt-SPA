@@ -650,33 +650,66 @@ h2 {
   animation: glitch-green-intense 0.35s infinite steps(2, end);
 }
 
+/* ================= STORE: BASE + WORLDBUILDING ================= */
+/* Intensity controls:
+   - Raise/lower scanline visibility via .store-page::before opacity.
+   - Increase/decrease glitch aggression in @keyframes title-jitter + text-shift.
+   - Button flicker amount is controlled by @keyframes btn-flicker and transition-delay.
+*/
 .store-page {
+  --toxic-green: #7dff88;
+  --panel-border: #242424;
+  --panel-inline: #111;
+  --log-text: #8d8d8d;
   min-height: 100vh;
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding-top: calc(var(--nav-height)*7.5);
-  padding-left: var(--nav-height);
+  padding: calc(var(--nav-height) + 2.4rem) var(--nav-height) 3rem;
   box-sizing: border-box;
-
+  position: relative;
+  isolation: isolate;
 }
 
-.store-header {
-  text-align: center;
-  margin-bottom: 2.75rem;
+.store-page::before,
+.store-page::after {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
 }
 
-.store-title {
-  font-size: clamp(2.2rem, 5vw, 4rem);
-  letter-spacing: 0.12em;
-  animation: flicker 2.5s infinite;
+/* scanlines */
+.store-page::before {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.04) 0,
+    rgba(255, 255, 255, 0.04) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.1;
+  mix-blend-mode: soft-light;
+  animation: scan-drift 8s linear infinite;
 }
 
-.store-subtitle {
-  margin-top: 0.75rem;
-  color: #9a9a9a;
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
+/* noise + vignette + low-opacity green flicker pulses */
+.store-page::after {
+  background:
+    radial-gradient(circle at center, transparent 52%, rgba(0, 0, 0, 0.5) 100%),
+    radial-gradient(circle at 15% 15%, rgba(125, 255, 136, 0.06), transparent 42%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0 1px, transparent 1px 3px);
+  animation: store-flicker 11s steps(1, end) infinite;
+}
+
+.store-system-status {
+  margin: 0 0 1.25rem;
+  color: #7f7f7f;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.19em;
+  opacity: 0.8;
 }
 
 .store-grid {
@@ -688,25 +721,83 @@ h2 {
 }
 
 .store-card {
-  border: 1px solid #232323;
+  position: relative;
+  border: 1px solid var(--panel-border);
+  outline: 1px solid var(--panel-inline);
+  outline-offset: -5px;
   background: rgba(0, 0, 0, 0.9);
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
   min-width: 0;
+  transform: translateY(var(--card-offset, 0));
+  transition:
+    border-color 0.18s steps(2, end),
+    transform 0.18s ease var(--hover-delay, 80ms),
+    outline-color 0.18s ease;
 }
 
-.store-image,
+.store-card::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transform: translate(-3px, 3px);
+  pointer-events: none;
+}
+
+.store-card:hover {
+  border-color: var(--toxic-green);
+  outline-color: rgba(125, 255, 136, 0.35);
+  animation: panel-flicker 0.32s steps(2, end) var(--flicker-delay, 0s) 2;
+}
+
+.store-image-wrap,
 .store-image-placeholder {
   width: 100%;
   aspect-ratio: 1 / 1;
 }
 
+.store-image-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #1a1a1a;
+}
+
 .store-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid #1e1e1e;
   display: block;
+  filter: contrast(1.08) saturate(0.86) brightness(0.92);
+  transform-origin: center;
+  transition: transform 0.24s ease var(--hover-delay, 80ms), filter 0.24s ease;
+}
+
+.store-image-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.06) 0,
+    rgba(255, 255, 255, 0.06) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.store-card:hover .store-image {
+  transform: scale(1.05) skewX(-0.7deg);
+  filter: contrast(1.14) saturate(0.8) brightness(0.94);
+}
+
+.store-card:hover .store-image-wrap::after {
+  animation: image-scan-glitch 0.35s steps(2, end) 1;
 }
 
 .store-image-placeholder {
@@ -727,42 +818,91 @@ h2 {
 }
 
 .store-product-name {
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
+  position: relative;
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
   margin: 0;
+  text-transform: uppercase;
+}
+
+.store-product-name::before,
+.store-product-name::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.store-product-name::before {
+  color: rgba(255, 255, 255, 0.35);
+  transform: translateX(-1px);
+}
+
+.store-product-name::after {
+  color: rgba(125, 255, 136, 0.55);
+  transform: translateX(1.5px);
+}
+
+.store-card:hover .store-product-name {
+  animation: title-jitter 0.24s steps(2, end) 1;
+}
+
+.store-card:hover .store-product-name::before,
+.store-card:hover .store-product-name::after {
+  opacity: 1;
+  animation: text-shift 0.22s steps(2, end) 1;
 }
 
 .store-product-description,
 .store-product-variant {
-  font-size: 0.84rem;
-  color: #b8b8b8;
+  font-size: 0.8rem;
+  color: var(--log-text);
   margin: 0;
+  letter-spacing: 0.04em;
 }
 
 .store-product-price {
   margin: 0.3rem 0 0;
-  font-size: 1rem;
-  color: #ffffff;
+  font-size: 0.95rem;
+  color: #d6d6d6;
+  letter-spacing: 0.08em;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .store-buy-btn {
   margin-top: auto;
   border: 1px solid #3a3a3a;
-  color: #ffffff;
+  color: #dcdcdc;
   background: transparent;
   padding: 0.8rem 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.11em;
   font-family: inherit;
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  position: relative;
+  transition:
+    border-color 0.2s steps(2, end),
+    background-color 0.2s steps(3, end) var(--hover-delay, 90ms),
+    color 0.2s steps(2, end),
+    transform 0.2s ease;
+}
+
+.store-buy-btn .btn-label {
+  position: relative;
+  display: inline-block;
 }
 
 .store-buy-btn:hover {
-  border-color: #00ff66;
-  color: #00ff66;
+  border-color: var(--toxic-green);
+  background: var(--toxic-green);
+  color: #010101;
   transform: translateY(-1px);
+}
+
+.store-buy-btn:hover .btn-label {
+  animation: btn-flicker 0.23s steps(2, end) 1;
 }
 
 .store-buy-btn.disabled,
@@ -771,6 +911,54 @@ h2 {
   color: #696969;
   cursor: not-allowed;
   transform: none;
+  background: transparent;
+}
+
+/* ================= STORE: ANIMATIONS ================= */
+@keyframes scan-drift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(3px); }
+}
+
+@keyframes store-flicker {
+  0%, 95%, 100% { opacity: 0.7; }
+  96% { opacity: 0.88; }
+  97% { opacity: 0.62; }
+  98% { opacity: 0.78; }
+}
+
+@keyframes panel-flicker {
+  0%, 100% { opacity: 1; }
+  30% { opacity: 0.84; }
+  55% { opacity: 0.96; }
+  70% { opacity: 0.8; }
+}
+
+@keyframes image-scan-glitch {
+  0% { opacity: 0; transform: translateX(0); }
+  35% { opacity: 0.22; transform: translateX(-1px); }
+  45% { opacity: 0; transform: translateX(1px); }
+  100% { opacity: 0.12; transform: translateX(0); }
+}
+
+@keyframes title-jitter {
+  0% { transform: translateX(0); }
+  30% { transform: translateX(-1px); }
+  60% { transform: translateX(1px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes text-shift {
+  0%, 100% { transform: translateX(0); }
+  35% { transform: translateX(-1px); }
+  70% { transform: translateX(2px); }
+}
+
+@keyframes btn-flicker {
+  0%, 100% { opacity: 1; transform: translateX(0); }
+  20% { opacity: 0.65; transform: translateX(-0.5px); }
+  45% { opacity: 1; transform: translateX(1px); }
+  65% { opacity: 0.8; }
 }
 
 /* Mobile tweaks */
