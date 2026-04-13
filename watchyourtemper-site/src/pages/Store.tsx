@@ -9,9 +9,6 @@ const Store: React.FC = () => {
 
   return (
     <main className="store-page">
-      <p className="store-system-status" aria-hidden="true">
-        SYSTEM STATUS: ACTIVE
-      </p>
 
       <section className="store-grid" aria-label="Store products">
         {storeProducts.map((product, index) => {

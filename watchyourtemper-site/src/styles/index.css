@@ -666,6 +666,7 @@ h2 {
   max-width: 1440px;
   margin: 0 auto;
   padding: calc(var(--nav-height) + 2.4rem) var(--nav-height) 3rem;
+  padding-top: calc(var(--nav-height)*8);
   box-sizing: border-box;
   position: relative;
   isolation: isolate;
@@ -701,15 +702,6 @@ h2 {
     radial-gradient(circle at 15% 15%, rgba(125, 255, 136, 0.06), transparent 42%),
     repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0 1px, transparent 1px 3px);
   animation: store-flicker 11s steps(1, end) infinite;
-}
-
-.store-system-status {
-  margin: 0 0 1.25rem;
-  color: #7f7f7f;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.19em;
-  opacity: 0.8;
 }
 
 .store-grid {
