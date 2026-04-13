@@ -2,11 +2,13 @@ import '../styles/index.css';
 import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
+
   const navigate = useNavigate();
   const backgroundVideoId = 'hvVGt5L7_tM';
 
   return (
     <div className="home-container">
+      <div className="scanlines" />
       <div className="video-background" aria-hidden="true">
         <iframe
           className="video-background-iframe"

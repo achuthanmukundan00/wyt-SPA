@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "../styles/index.css";
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const location = useLocation();
+  const isHome = location.pathname === "/";
   return (
-    <div className="nav-top">
+    <nav className={`nav-top ${!isHome ? "nav-solid" : ""}`}>
       <div className="nav-left">
         <Link to="/">
           <img
@@ -62,7 +63,7 @@ const Navbar: React.FC = () => {
         <Link to="/store">store</Link>
         <Link to="/join">join</Link>
       </div>
-    </div>
+    </nav>
   );
 };
 

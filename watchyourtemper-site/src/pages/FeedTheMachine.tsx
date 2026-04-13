@@ -8,7 +8,7 @@ const FeedTheMachine: React.FC = () => {
         Your browser does not support the video tag.
       </video>
 
-      <div className="grain-overlay" />
+      {/* <div className="grain-overlay" /> */}
       <div className="vignette" />
 
       <div className="machine-wrapper">
