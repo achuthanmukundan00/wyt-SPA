@@ -1002,7 +1002,7 @@ h2 {
 
   .store-page {
     padding: calc(var(--nav-height-mobile) + 1.5rem) 1rem 2rem;
-    padding-top: calc(var(--nav-height-mobile) * 25);
+    padding-top: calc(var(--nav-height-mobile) * 27);
   }
 
   .store-grid {
