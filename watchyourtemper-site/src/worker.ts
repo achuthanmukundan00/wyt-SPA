@@ -1466,6 +1466,7 @@ const toStatusFromPrintful = (status?: string): CheckoutIntentStatus | undefined
 };
 
 const buildPrintfulWebhookEventId = async (rawBody: string) => sha256Hex(rawBody);
+const buildPrintfulExternalId = (intentId: string) => `wyt${intentId.replace(/-/g, '')}`;
 
 const getOrderStoreStub = (env: Env) => {
   const id = env.ORDER_STORE.idFromName(ORDER_STORE_NAME);
@@ -1488,6 +1489,12 @@ const getRecordById = async (env: Env, intentId: string) =>
   orderStoreRequest<{ record: CheckoutIntentRecord | null }>(env, `/records/by-intent/${encodeURIComponent(intentId)}`).then(
     (payload) => payload.record,
   );
+
+const getRecordByPrintfulExternalId = async (env: Env, externalId: string) =>
+  orderStoreRequest<{ record: CheckoutIntentRecord | null }>(
+    env,
+    `/records/by-printful-external/${encodeURIComponent(externalId)}`,
+  ).then((payload) => payload.record);
 
 const getRecordByPaymentReference = async (env: Env, paymentReferenceId: string) =>
   orderStoreRequest<{ record: CheckoutIntentRecord | null }>(
@@ -1797,8 +1804,9 @@ const handlePaymentWebhook = async (request: Request, env: Env) => {
       await updateCheckoutIntent(env, record.intentId, { status: 'paid' });
     }
 
+    const printfulExternalId = buildPrintfulExternalId(record.intentId);
     const printfulOrder = await createPrintfulOrder(env, {
-      externalId: record.intentId,
+      externalId: printfulExternalId,
       shipping: record.shippingRateId,
       recipient: {
         name: record.shipping.name,
@@ -1819,7 +1827,7 @@ const handlePaymentWebhook = async (request: Request, env: Env) => {
     const updatedRecord = await updateCheckoutIntent(env, record.intentId, {
       status: 'order_created',
       printfulOrderId: String(printfulOrder.id),
-      printfulExternalId: printfulOrder.external_id || record.intentId,
+      printfulExternalId: printfulOrder.external_id || printfulExternalId,
       fulfillmentStatus: printfulOrder.status || 'draft',
     });
 
@@ -1873,7 +1881,7 @@ const handlePrintfulWebhook = async (request: Request, env: Env) => {
       return json({ ok: true, ignored: true, reason: 'external_id_missing' });
     }
 
-    const record = await getRecordById(env, externalId);
+    const record = (await getRecordByPrintfulExternalId(env, externalId)) || (await getRecordById(env, externalId));
     if (!record) {
       await finishWebhookEvent(env, eventKey);
       return json({ ok: true, ignored: true, reason: 'intent_not_found' });
@@ -1998,6 +2006,15 @@ export class OrderStoreDurableObject {
       return json({ record: record || null });
     }
 
+    if (request.method === 'GET' && path.startsWith('/records/by-printful-external/')) {
+      const externalId = decodeURIComponent(path.replace('/records/by-printful-external/', ''));
+      const intentId = (await this.state.storage.get(`printful-external:${externalId}`)) as string | undefined;
+      const record = intentId
+        ? ((await this.state.storage.get(`intent:${intentId}`)) as CheckoutIntentRecord | undefined)
+        : null;
+      return json({ record: record || null });
+    }
+
     if (request.method === 'GET' && path.startsWith('/records/by-idempotency/')) {
       const idempotencyKey = decodeURIComponent(path.replace('/records/by-idempotency/', ''));
       const intentId = (await this.state.storage.get(`idempotency:${idempotencyKey}`)) as string | undefined;
@@ -2023,6 +2040,12 @@ export class OrderStoreDurableObject {
       };
 
       await this.state.storage.put(`intent:${intentId}`, updated);
+      if (existing.printfulExternalId && existing.printfulExternalId !== updated.printfulExternalId) {
+        await this.state.storage.delete(`printful-external:${existing.printfulExternalId}`);
+      }
+      if (updated.printfulExternalId) {
+        await this.state.storage.put(`printful-external:${updated.printfulExternalId}`, intentId);
+      }
       return json({ record: updated });
     }
 
@@ -2115,6 +2138,7 @@ export default {
 export const __testables = {
   buildChargeSummary,
   buildCheckoutIdempotencyKey,
+  buildPrintfulExternalId,
   defaultCurrencyForCountry,
   buildOrderConfirmationEmail,
   buildPrintfulWebhookEventId,

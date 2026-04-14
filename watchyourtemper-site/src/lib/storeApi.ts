@@ -1,6 +1,8 @@
 import type { ChargeSummary, ShippingRateOption, CheckoutIntent, StoreProduct } from '../types/store';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+const configuredApiBase = import.meta.env.VITE_API_BASE_URL?.trim() || '';
+const isLocalApiBase = /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configuredApiBase);
+const API_BASE = import.meta.env.PROD && isLocalApiBase ? '' : configuredApiBase;
 
 const parseJson = async <T>(response: Response): Promise<T> => {
   const payload = (await response.json()) as T & { error?: string };
