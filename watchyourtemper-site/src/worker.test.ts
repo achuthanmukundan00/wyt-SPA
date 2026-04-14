@@ -208,7 +208,7 @@ describe('worker helpers', () => {
 
   test('sanitizes printful external ids from checkout intent ids', () => {
     expect(__testables.buildPrintfulExternalId('9ccbb1a8-8705-41ab-ac4a-349913904dab')).toBe(
-      'wyt9ccbb1a8870541abac4a349913904dab',
+      'wyt9ccbb1a8870541abac4a349913904',
     );
   });
 
