@@ -34,3 +34,32 @@ export const createCheckoutIntent = async (input: {
   const payload = await parseJson<{ intent: CheckoutIntent }>(response);
   return payload.intent;
 };
+
+export type CheckoutStartInput = {
+  productId: string;
+  variantId: string;
+  quantity: number;
+  customer: { email: string };
+  shippingAddress: {
+    name: string;
+    line1: string;
+    line2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+};
+
+export const createCheckoutStart = async (input: CheckoutStartInput) => {
+  const response = await fetch(`${API_BASE}/api/store/checkout-start`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(input),
+  });
+
+  const payload = await parseJson<{ payment: { checkoutUrl: string } }>(response);
+  return payload;
+};
