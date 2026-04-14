@@ -96,22 +96,36 @@ This site links to a private supporters' mailing list through [MailerLite](https
 ---
 
 
-## 🛒 Store (Stripe Payment Links)
+## 🛒 Store (Printful-backed catalog + server-side checkout intent)
 
-The merch store is frontend-only and uses hosted Stripe Payment Links.
+The store now loads catalog + variant data from backend endpoints that integrate with Printful using a **server-side token**.
 
-- Edit product data in `src/data/storeProducts.ts`.
-- Paste each Stripe URL into `stripeUrl` and set `enabled: true` for products you want live.
-- Add product images to `public/assets/images/store/` and set each product `image` path (example: `/assets/images/store/watchyourtemper-tee.jpg`).
-- Store UI route/page lives at `src/pages/Store.tsx` and is available at `/store`.
+### Architecture (v1)
 
-Files changed for this feature:
-- `src/data/storeProducts.ts`
-- `src/pages/Store.tsx`
-- `src/App.tsx`
-- `src/components/Navbar.tsx`
-- `src/styles/index.css`
-- `README.md`
+- Frontend `src/pages/Store.tsx` calls backend routes, not Stripe links.
+- Backend routes live under `api/store/*`.
+- Printful API calls are centralized in `api/_lib/printfulClient.ts`.
+- `POST /api/store/checkout-intent` validates product/variant/quantity server-side and returns canonical line-item data for future payment + order automation.
+
+### Required environment variables
+
+Copy `.env.example` and set values:
+
+- `PRINTFUL_TOKEN` (required, server-only)
+- `PRINTFUL_STORE_ID` (optional for future store scoping)
+- `VITE_API_BASE_URL` (optional when frontend and API are split across domains)
+
+### API routes
+
+- `GET /api/store/products`
+- `GET /api/store/products/<id-or-slug>`
+- `POST /api/store/checkout-intent`
+
+### What remains for full live ordering
+
+- Connect checkout intents to your payment processor session/intent creation.
+- On successful payment, create real Printful orders server-side.
+- Add webhook handlers for fulfillment/tracking sync.
 
 ---
 
