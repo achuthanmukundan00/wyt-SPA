@@ -31,3 +31,12 @@
 1. Connect checkout intent response to payment session/intent creation.
 2. Create Printful order after payment confirmation.
 3. Add webhook endpoints for fulfillment/tracking updates.
+
+
+## v2 lifecycle env vars
+
+- `PAYMENT_PROVIDER` (`stripe`)
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `PRINTFUL_WEBHOOK_SECRET`
+- `STORE_BASE_URL`
