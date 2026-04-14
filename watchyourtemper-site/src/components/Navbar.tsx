@@ -56,7 +56,13 @@ const Navbar: React.FC<NavbarProps> = ({ variant }) => {
           <img src="/icons/soundcloud.svg" alt="SC" className="social-icon" />
         </a>
       </div>
-      <button className="burger" onClick={() => setMenuOpen(!menuOpen)}>
+      <button
+        className={`burger ${menuOpen ? 'is-open' : ''}`}
+        type="button"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
         <span />
         <span />
         <span />
