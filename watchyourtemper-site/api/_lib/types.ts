@@ -17,9 +17,20 @@ export type StoreProduct = {
   variants: StoreVariant[];
 };
 
+export type CheckoutIntentStatus =
+  | 'requires_payment'
+  | 'paid'
+  | 'order_created'
+  | 'in_production'
+  | 'shipped'
+  | 'delivered'
+  | 'fulfilled'
+  | 'cancelled'
+  | 'refunded';
+
 export type CheckoutIntent = {
   intentId: string;
-  status: 'requires_payment';
+  status: CheckoutIntentStatus;
   lineItem: {
     productId: string;
     productTitle: string;
