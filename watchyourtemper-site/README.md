@@ -26,7 +26,7 @@ It prioritizes **immersive continuity**, keeping audio, visuals, and interaction
 | Frontend     | React (TypeScript + Vite) |
 | Styling      | Custom CSS (no Tailwind) |
 | Assets       | MP4 background loops, SVG/PNG icons, custom overlays |
-| Deployment   | GitHub Pages / Vercel / Netlify (recommended) |
+| Deployment   | Cloudflare Workers + static assets |
 
 ---
 
@@ -96,16 +96,16 @@ This site links to a private supporters' mailing list through [MailerLite](https
 ---
 
 
-## 🛒 Store (Printful-backed catalog + server-side checkout intent)
+## 🛒 Store (Printful-backed catalog + Worker checkout lifecycle)
 
 The store now loads catalog + variant data from backend endpoints that integrate with Printful using a **server-side token**.
 
-### Architecture (v1)
+### Architecture
 
 - Frontend `src/pages/Store.tsx` calls backend routes, not Stripe links.
-- Backend routes live under `api/store/*`.
-- Printful API calls are centralized in `api/_lib/printfulClient.ts`.
-- `POST /api/store/checkout-intent` validates product/variant/quantity server-side and returns canonical line-item data for future payment + order automation.
+- Cloudflare Worker entrypoint lives in `src/worker.ts`.
+- Durable order + webhook state lives in the `OrderStoreDurableObject`.
+- `POST /api/store/checkout-intent` validates product/variant/quantity server-side and returns canonical cart data for payment + order automation.
 
 ### Required environment variables
 
@@ -114,18 +114,29 @@ Copy `.env.example` and set values:
 - `PRINTFUL_TOKEN` (required, server-only)
 - `PRINTFUL_STORE_ID` (optional for future store scoping)
 - `VITE_API_BASE_URL` (optional when frontend and API are split across domains)
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `PRINTFUL_WEBHOOK_SECRET`
+- `STORE_BASE_URL`
+- `EMAIL_PROVIDER` (`resend`)
+- `RESEND_API_KEY`
+- `ORDER_CONFIRMATION_FROM_EMAIL`
 
 ### API routes
 
 - `GET /api/store/products`
 - `GET /api/store/products/<id-or-slug>`
 - `POST /api/store/checkout-intent`
+- `POST /api/store/checkout-start`
+- `POST /api/webhooks/payment`
+- `POST /api/webhooks/printful`
 
 ### Lifecycle status (v2)
 
-- `POST /api/store/checkout-start` creates a Stripe Checkout Session from server-validated line-item data.
-- `POST /api/webhooks/payment` confirms Stripe webhooks and creates Printful orders.
-- `POST /api/webhooks/printful` syncs fulfillment/tracking updates back to checkout records.
+- Worker creates a Stripe Checkout Session from server-validated line-item data.
+- Stripe webhook confirms payment and creates Printful orders.
+- Printful webhook syncs fulfillment/tracking updates back to durable checkout records.
+- After a Printful order is successfully created, the payment webhook attempts to send an order confirmation email to the checkout email address.
 
 ### Pricing source of truth
 
@@ -137,7 +148,7 @@ Copy `.env.example` and set values:
 
 ## 📦 Deployment
 
-Recommended: [Vercel](https://vercel.com/) or [Netlify](https://netlify.com/)
+Deploy through Cloudflare Workers/Wrangler. The Worker serves both the API routes and the static app asset bundle.
 
 Build:
 
@@ -145,7 +156,7 @@ Build:
 npm run build
 ```
 
-Deploy the `dist/` folder to your static host of choice.
+Then publish with Wrangler using the checked-in `wrangler.jsonc`.
 
 ---
 

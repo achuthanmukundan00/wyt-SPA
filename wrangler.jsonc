@@ -1,0 +1,23 @@
+{
+  "name": "watchyourtemper-api",
+  "main": "watchyourtemper-site/src/worker.ts",
+  "compatibility_date": "2026-04-14",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "ORDER_STORE",
+        "class_name": "OrderStoreDurableObject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["OrderStoreDurableObject"]
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1 // optional. default = 1.
+  }
+}
