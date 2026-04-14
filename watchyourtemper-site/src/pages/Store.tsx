@@ -325,20 +325,18 @@ const Store: React.FC = () => {
           </p>
         </div>
 
-        <div className="store-support-block">
-          <p className="store-support-eyebrow">Need Help?</p>
-          <p className="store-support-copy">
-            If checkout acts strange, an API call fails, or something arrives damaged or incorrect, contact support and
-            we&apos;ll help sort it out.
-          </p>
-          {supportHref ? (
+        {supportHref ? (
+          <div className="store-support-block">
+            <p className="store-support-eyebrow">Need Help?</p>
+            <p className="store-support-copy">
+              If checkout acts strange, an API call fails, or something arrives damaged or incorrect, contact support and
+              we&apos;ll help sort it out.
+            </p>
             <a className="store-support-link" href={supportHref}>
               Contact support
             </a>
-          ) : (
-            <p className="store-support-copy">Support contact is being configured right now.</p>
-          )}
-        </div>
+          </div>
+        ) : null}
       </section>
 
       <ProductOptionsModal
