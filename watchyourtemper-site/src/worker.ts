@@ -1466,7 +1466,7 @@ const toStatusFromPrintful = (status?: string): CheckoutIntentStatus | undefined
 };
 
 const buildPrintfulWebhookEventId = async (rawBody: string) => sha256Hex(rawBody);
-const buildPrintfulExternalId = (intentId: string) => `wyt${intentId.replace(/-/g, '')}`;
+const buildPrintfulExternalId = (intentId: string) => `wyt${intentId.replace(/-/g, '').slice(0, 29)}`;
 
 const getOrderStoreStub = (env: Env) => {
   const id = env.ORDER_STORE.idFromName(ORDER_STORE_NAME);
