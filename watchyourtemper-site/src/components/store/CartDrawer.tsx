@@ -8,7 +8,9 @@ type Props = {
   subtotal: number;
   totalQuantity: number;
   currency: string;
+  checkoutDisabled?: boolean;
   onClose: () => void;
+  onCheckout: () => void;
   onRemove: (lineKey: string) => void;
   onUpdateQuantity: (lineKey: string, quantity: number) => void;
 };
@@ -19,7 +21,9 @@ const CartDrawer: React.FC<Props> = ({
   subtotal,
   totalQuantity,
   currency,
+  checkoutDisabled = false,
   onClose,
+  onCheckout,
   onRemove,
   onUpdateQuantity,
 }) => {
@@ -57,8 +61,18 @@ const CartDrawer: React.FC<Props> = ({
         )}
 
         <footer>
-          <p>Subtotal</p>
-          <strong>{currency} {subtotal.toFixed(2)}</strong>
+          <div className="store-cart-summary">
+            <p>Subtotal</p>
+            <strong>{currency} {subtotal.toFixed(2)}</strong>
+          </div>
+          <button
+            type="button"
+            className="store-checkout-btn"
+            onClick={onCheckout}
+            disabled={checkoutDisabled}
+          >
+            Checkout
+          </button>
         </footer>
       </aside>
     </>

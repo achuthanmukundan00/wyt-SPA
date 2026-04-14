@@ -84,6 +84,10 @@ const Store: React.FC = () => {
     setIsCartOpen(true);
   };
 
+  const handleCheckout = () => {
+    setToast('Checkout form is coming next. For now, cart review is available.');
+  };
+
   return (
     <main className="store-page">
       <header className="store-toolbar">
@@ -108,7 +112,9 @@ const Store: React.FC = () => {
         subtotal={subtotal}
         totalQuantity={totalQuantity}
         currency={currency}
+        checkoutDisabled={!items.length}
         onClose={() => setIsCartOpen(false)}
+        onCheckout={handleCheckout}
         onRemove={removeItem}
         onUpdateQuantity={updateQuantity}
       />
