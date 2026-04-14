@@ -7,6 +7,7 @@ type StorePreferencesContextValue = {
   currencies: string[];
   exchangeRates: Record<string, number>;
   baseCurrency: string;
+  supportEmail: string;
   selectedCountry: string;
   selectedCurrency: string;
   detectedCountry: string;
@@ -41,6 +42,7 @@ export const StorePreferencesProvider: React.FC<React.PropsWithChildren> = ({ ch
   const [detectedCountry, setDetectedCountry] = useState('US');
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({ USD: 1 });
   const [baseCurrency, setBaseCurrency] = useState('USD');
+  const [supportEmail, setSupportEmail] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,6 +63,7 @@ export const StorePreferencesProvider: React.FC<React.PropsWithChildren> = ({ ch
         setDetectedCountry(payload.detectedCountry);
         setExchangeRates(payload.exchangeRates);
         setBaseCurrency(payload.baseCurrency);
+        setSupportEmail(payload.supportEmail);
         setSelectedCountryState(storedCountry || payload.detectedCountry || 'US');
         setSelectedCurrencyState(storedCurrency || payload.defaultCurrency || 'USD');
       } catch {
@@ -72,6 +75,7 @@ export const StorePreferencesProvider: React.FC<React.PropsWithChildren> = ({ ch
         setSelectedCurrencyState('USD');
         setExchangeRates({ USD: 1 });
         setBaseCurrency('USD');
+        setSupportEmail('');
       } finally {
         if (active) {
           setLoading(false);
@@ -92,6 +96,7 @@ export const StorePreferencesProvider: React.FC<React.PropsWithChildren> = ({ ch
       currencies,
       exchangeRates,
       baseCurrency,
+      supportEmail,
       selectedCountry,
       selectedCurrency,
       detectedCountry,
@@ -114,7 +119,7 @@ export const StorePreferencesProvider: React.FC<React.PropsWithChildren> = ({ ch
         }
       },
     }),
-    [baseCurrency, countries, currencies, detectedCountry, exchangeRates, loading, selectedCountry, selectedCurrency],
+    [baseCurrency, countries, currencies, detectedCountry, exchangeRates, loading, selectedCountry, selectedCurrency, supportEmail],
   );
 
   return <StorePreferencesContext.Provider value={value}>{children}</StorePreferencesContext.Provider>;

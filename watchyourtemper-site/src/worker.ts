@@ -29,6 +29,7 @@ export interface Env {
   EMAIL_PROVIDER?: string;
   RESEND_API_KEY?: string;
   ORDER_CONFIRMATION_FROM_EMAIL?: string;
+  SUPPORT_EMAIL?: string;
 }
 
 type ExchangeRatesResponse = {
@@ -487,6 +488,8 @@ const getOptionalEnv = (env: Env, name: keyof Env): string => {
   const value = env[name];
   return typeof value === 'string' ? value.trim() : '';
 };
+
+const getStoreSupportEmail = (env: Env) => getOptionalEnv(env, 'SUPPORT_EMAIL') || getOptionalEnv(env, 'ORDER_CONFIRMATION_FROM_EMAIL');
 
 const sanitizeQuantity = (value: unknown) => {
   const quantity = Number(value);
@@ -1617,6 +1620,7 @@ const handleStorePreferences = async (request: Request, env: Env) => {
     currencies: AVAILABLE_CURRENCIES,
     exchangeRates,
     baseCurrency,
+    supportEmail: getStoreSupportEmail(env),
   });
 };
 

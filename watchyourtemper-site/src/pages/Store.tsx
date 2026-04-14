@@ -8,6 +8,19 @@ import { createCheckoutStart, fetchShippingQuote, fetchStoreProducts } from '../
 import type { ChargeSummary, ShippingRateOption, StoreProduct, StoreVariant } from '../types/store';
 import '../styles/index.css';
 
+const buildSupportHref = (supportEmail: string) => {
+  if (!supportEmail) {
+    return '';
+  }
+
+  const params = new URLSearchParams({
+    subject: 'Store support',
+    body: 'Hi,\n\nI need help with a store order or checkout issue.\n\nWhat happened:\n\nOrder email (if any):\n\nThanks.',
+  });
+
+  return `mailto:${supportEmail}?${params.toString()}`;
+};
+
 const Store: React.FC = () => {
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +49,8 @@ const Store: React.FC = () => {
   });
 
   const { items, subtotal, totalQuantity, currency, addItem, removeItem, updateQuantity } = useCart();
-  const { countries, selectedCountry, selectedCurrency, setSelectedCountry } = useStorePreferences();
+  const { countries, selectedCountry, selectedCurrency, setSelectedCountry, supportEmail } = useStorePreferences();
+  const supportHref = useMemo(() => buildSupportHref(supportEmail), [supportEmail]);
 
   useEffect(() => {
     document.title = 'watchyourtemper | Store';
@@ -299,6 +313,34 @@ const Store: React.FC = () => {
 
       {content}
 
+      <section className="store-support-panel" aria-label="Store policy and support">
+        <div className="store-support-block store-support-block-policy">
+          <p className="store-support-eyebrow">Store Policy</p>
+          <p className="store-support-copy">
+            Orders are processed as submitted, so please double-check your cart, size, and shipping details before paying.
+            Availability and pricing can shift until checkout is completed.
+          </p>
+          <p className="store-support-copy">
+            All items are final sale. We do not offer returns, refunds, or exchanges except where required by law.
+          </p>
+        </div>
+
+        <div className="store-support-block">
+          <p className="store-support-eyebrow">Need Help?</p>
+          <p className="store-support-copy">
+            If checkout acts strange, an API call fails, or something arrives damaged or incorrect, contact support and
+            we&apos;ll help sort it out.
+          </p>
+          {supportHref ? (
+            <a className="store-support-link" href={supportHref}>
+              Contact support
+            </a>
+          ) : (
+            <p className="store-support-copy">Support contact is being configured right now.</p>
+          )}
+        </div>
+      </section>
+
       <ProductOptionsModal
         product={activeProduct}
         open={isModalOpen}
@@ -522,6 +564,12 @@ const Store: React.FC = () => {
                 </div>
 
                 {checkoutError ? <p className="store-checkout-error">{checkoutError}</p> : null}
+
+                {supportHref ? (
+                  <p className="store-checkout-note">
+                    Hit a checkout hiccup? <a className="store-support-inline-link" href={supportHref}>Contact support</a>.
+                  </p>
+                ) : null}
 
                 <button className="store-checkout-btn" type="submit" disabled={isCheckoutSubmitting}>
                   {isCheckoutSubmitting ? 'Redirecting…' : 'Continue to payment'}
