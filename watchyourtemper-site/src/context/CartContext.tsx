@@ -27,7 +27,7 @@ type CartContextValue = {
   clearCart: () => void;
 };
 
-const CART_STORAGE_KEY = 'wyt-store-cart-v1';
+export const CART_STORAGE_KEY = 'wyt-store-cart-v1';
 
 const CartContext = createContext<CartContextValue | null>(null);
 
