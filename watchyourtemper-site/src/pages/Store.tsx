@@ -21,6 +21,8 @@ const buildSupportHref = (supportEmail: string) => {
   return `mailto:${supportEmail}?${params.toString()}`;
 };
 
+const COUNTRIES_REQUIRING_STATE = new Set(['US', 'CA', 'AU']);
+
 const Store: React.FC = () => {
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -202,6 +204,8 @@ const Store: React.FC = () => {
 
     return chargeSummary.tax + chargeSummary.vat + chargeSummary.digitization + chargeSummary.additionalFee + chargeSummary.fulfillmentFee + chargeSummary.retailDeliveryFee;
   }, [chargeSummary]);
+
+  const requiresStateProvince = COUNTRIES_REQUIRING_STATE.has(checkoutForm.country.trim().toUpperCase());
 
   const content = useMemo(() => {
     if (loading) {
@@ -528,7 +532,7 @@ const Store: React.FC = () => {
                       value={checkoutForm.state}
                       onChange={(event) => updateCheckoutField('state', event.target.value)}
                       autoComplete="address-level1"
-                      required
+                      required={requiresStateProvince}
                     />
                   </label>
                 </div>
