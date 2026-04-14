@@ -244,6 +244,7 @@ const Store: React.FC = () => {
       return;
     }
 
+    setIsCartOpen(false);
     setCheckoutError(null);
     setShippingQuoteError(null);
     setIsCheckoutModalOpen(true);
