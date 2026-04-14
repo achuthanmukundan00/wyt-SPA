@@ -34,6 +34,7 @@ export type StorePreferencesResponse = {
   currencies: string[];
   exchangeRates: Record<string, number>;
   baseCurrency: string;
+  supportEmail: string;
 };
 
 export const fetchStorePreferences = async (): Promise<StorePreferencesResponse> => {

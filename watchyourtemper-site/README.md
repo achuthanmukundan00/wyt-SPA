@@ -121,6 +121,7 @@ Copy `.env.example` and set values:
 - `EMAIL_PROVIDER` (`resend`)
 - `RESEND_API_KEY`
 - `ORDER_CONFIRMATION_FROM_EMAIL`
+- `SUPPORT_EMAIL` (optional, defaults to `ORDER_CONFIRMATION_FROM_EMAIL` for the store support link)
 
 ### API routes
 
