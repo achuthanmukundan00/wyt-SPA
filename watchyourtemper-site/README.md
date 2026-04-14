@@ -121,11 +121,17 @@ Copy `.env.example` and set values:
 - `GET /api/store/products/<id-or-slug>`
 - `POST /api/store/checkout-intent`
 
-### What remains for full live ordering
+### Lifecycle status (v2)
 
-- Connect checkout intents to your payment processor session/intent creation.
-- On successful payment, create real Printful orders server-side.
-- Add webhook handlers for fulfillment/tracking sync.
+- `POST /api/store/checkout-start` creates a Stripe Checkout Session from server-validated line-item data.
+- `POST /api/webhooks/payment` confirms Stripe webhooks and creates Printful orders.
+- `POST /api/webhooks/printful` syncs fulfillment/tracking updates back to checkout records.
+
+### Pricing source of truth
+
+- Variant prices are read from Printful product data (`retail_price`) and normalized server-side.
+- Checkout amounts are calculated on the server from the selected variant + quantity (browser price input is ignored).
+- Stripe Checkout `unit_amount` is derived from the server-validated variant price to avoid client-side tampering.
 
 ---
 

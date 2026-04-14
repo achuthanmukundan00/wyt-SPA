@@ -37,6 +37,34 @@ type PrintfulProductDetail = {
   sync_variants: PrintfulSyncVariant[];
 };
 
+type PrintfulOrderRecipient = {
+  name: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  state_code: string;
+  zip: string;
+  country_code: string;
+  email: string;
+};
+
+type PrintfulOrderItem = {
+  variant_id: number;
+  quantity: number;
+};
+
+type PrintfulCreateOrderInput = {
+  externalId: string;
+  recipient: PrintfulOrderRecipient;
+  items: PrintfulOrderItem[];
+};
+
+type PrintfulCreateOrderResult = {
+  id: number;
+  external_id?: string;
+  status?: string;
+};
+
 const parseVariantName = (name: string): { color: string; size: string } => {
   const parts = name.split('/').map((item) => item.trim()).filter(Boolean);
   if (parts.length >= 2) {
@@ -64,18 +92,23 @@ const getAccessToken = (): string => {
   return token;
 };
 
-const printfulRequest = async <T>(path: string): Promise<T> => {
+const printfulRequest = async <T>(input: {
+  path: string;
+  method?: 'GET' | 'POST';
+  body?: unknown;
+}): Promise<T> => {
   const token = getAccessToken();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
-    const response = await fetch(`${PRINTFUL_API_BASE}${path}`, {
-      method: 'GET',
+    const response = await fetch(`${PRINTFUL_API_BASE}${input.path}`, {
+      method: input.method || 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      body: input.body ? JSON.stringify(input.body) : undefined,
       signal: controller.signal,
     });
 
@@ -124,15 +157,17 @@ const normalizeDetailedStoreProduct = (payload: PrintfulProductDetail) => {
   };
 };
 
+export const normalizeStoreProduct = normalizeDetailedStoreProduct;
+
 export const getStoreProducts = async () => {
-  const summaries = await printfulRequest<PrintfulProductListItem[]>('/store/products');
+  const summaries = await printfulRequest<PrintfulProductListItem[]>({ path: '/store/products' });
 
   const detailedProducts = await Promise.all(
     summaries
       .filter((item) => !item.is_ignored)
       .map(async (item) => {
         try {
-          const detail = await printfulRequest<PrintfulProductDetail>(`/store/products/${item.id}`);
+          const detail = await printfulRequest<PrintfulProductDetail>({ path: `/store/products/${item.id}` });
           return normalizeDetailedStoreProduct(detail);
         } catch (error) {
           console.error('[printful] failed to load product detail', item.id, error);
@@ -149,7 +184,7 @@ export const getStoreProducts = async () => {
 export const getStoreProductByIdOrSlug = async (idOrSlug: string) => {
   if (/^\d+$/.test(idOrSlug)) {
     try {
-      const detail = await printfulRequest<PrintfulProductDetail>(`/store/products/${idOrSlug}`);
+      const detail = await printfulRequest<PrintfulProductDetail>({ path: `/store/products/${idOrSlug}` });
       return normalizeDetailedStoreProduct(detail);
     } catch {
       // fallback below
@@ -158,4 +193,21 @@ export const getStoreProductByIdOrSlug = async (idOrSlug: string) => {
 
   const products = await getStoreProducts();
   return products.find((item) => item.id === idOrSlug || item.slug === idOrSlug) || null;
+};
+
+export const createPrintfulOrder = async (input: PrintfulCreateOrderInput): Promise<PrintfulCreateOrderResult> => {
+  if (!input.items.length) {
+    throw new Error('Printful order requires at least one item.');
+  }
+
+  return printfulRequest<PrintfulCreateOrderResult>({
+    path: '/orders',
+    method: 'POST',
+    body: {
+      external_id: input.externalId,
+      recipient: input.recipient,
+      items: input.items,
+      confirm: true,
+    },
+  });
 };
