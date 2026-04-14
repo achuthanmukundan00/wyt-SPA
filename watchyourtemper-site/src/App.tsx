@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import FeedTheMachine from './pages/FeedTheMachine';
 import Join from './pages/Join';
 import Store from './pages/Store';
+import StoreCancel from './pages/StoreCancel';
+import StoreSuccess from './pages/StoreSuccess';
 import './styles/index.css';
 
 const AppLayout: React.FC = () => {
@@ -21,6 +23,8 @@ const AppLayout: React.FC = () => {
           <Route path="/machine" element={<FeedTheMachine />} />
           <Route path="/join" element={<Join />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/store/success" element={<StoreSuccess />} />
+          <Route path="/store/cancel" element={<StoreCancel />} />
         </Routes>
       </div>
     </>
