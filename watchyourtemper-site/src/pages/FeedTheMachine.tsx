@@ -16,23 +16,48 @@ const FeedTheMachine: React.FC = () => {
           <p className="machine-sub">SELECT A CHANNEL</p>
 
           <div className="machine-links">
-            <a className="feed-btn" href="https://watchyourtemper.bandcamp.com" target="_blank">
+            <a
+              className="feed-btn"
+              href="https://watchyourtemper.bandcamp.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src="/icons/bandcamp.png" alt="Bandcamp" className="btn-icon" />
               BANDCAMP
             </a>
-            <a className="feed-btn" href="https://open.spotify.com/artist/4J2nrkMqpsfDQcZgSalbht?si=0BOws4dHSginwoO28iy90A" target="_blank">
+            <a
+              className="feed-btn"
+              href="https://open.spotify.com/artist/4J2nrkMqpsfDQcZgSalbht?si=0BOws4dHSginwoO28iy90A"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src="/icons/spotify.png" alt="Spotify" className="btn-icon" />
               SPOTIFY
             </a>
-            <a className="feed-btn" href="https://music.apple.com/ca/artist/watchyourtemper/1768341683" target="_blank">
+            <a
+              className="feed-btn"
+              href="https://music.apple.com/ca/artist/watchyourtemper/1768341683"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src="/icons/apple_music.png" alt="Apple Music" className="btn-icon" />
               APPLE MUSIC
             </a>
-            <a className="feed-btn" href="https://music.youtube.com/channel/UCPBklxjs8z1T4-aKNuCgyXQ?si=G5dHuNlRjJnzgLiK" target="_blank">
+            <a
+              className="feed-btn"
+              href="https://music.youtube.com/channel/UCPBklxjs8z1T4-aKNuCgyXQ?si=G5dHuNlRjJnzgLiK"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src="/icons/youtube_music.png" alt="Youtube Music" className="btn-icon" />
               YOUTUBE MUSIC
             </a>
-            <a className="feed-btn" href="https://tidal.com/browse/artist/50451699?u" target="_blank">
+            <a
+              className="feed-btn"
+              href="https://tidal.com/browse/artist/50451699?u"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img src="/icons/tidal.png" alt="Tidal" className="btn-icon" />
               TIDAL
             </a>
