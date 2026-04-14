@@ -3,8 +3,9 @@ import CartDrawer from '../components/store/CartDrawer';
 import ProductCard from '../components/store/ProductCard';
 import ProductOptionsModal from '../components/store/ProductOptionsModal';
 import { useCart } from '../context/CartContext';
-import { createCheckoutStart, fetchStoreProducts } from '../lib/storeApi';
-import type { StoreProduct, StoreVariant } from '../types/store';
+import { useStorePreferences } from '../context/StorePreferencesContext';
+import { createCheckoutStart, fetchShippingQuote, fetchStoreProducts } from '../lib/storeApi';
+import type { ChargeSummary, ShippingRateOption, StoreProduct, StoreVariant } from '../types/store';
 import '../styles/index.css';
 
 const Store: React.FC = () => {
@@ -17,6 +18,11 @@ const Store: React.FC = () => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [isCheckoutSubmitting, setIsCheckoutSubmitting] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [shippingQuoteError, setShippingQuoteError] = useState<string | null>(null);
+  const [shippingQuoteLoading, setShippingQuoteLoading] = useState(false);
+  const [shippingOptions, setShippingOptions] = useState<ShippingRateOption[]>([]);
+  const [selectedShippingRateId, setSelectedShippingRateId] = useState('');
+  const [chargeSummary, setChargeSummary] = useState<ChargeSummary | null>(null);
   const [toast, setToast] = useState('');
   const [checkoutForm, setCheckoutForm] = useState({
     email: '',
@@ -30,6 +36,7 @@ const Store: React.FC = () => {
   });
 
   const { items, subtotal, totalQuantity, currency, addItem, removeItem, updateQuantity } = useCart();
+  const { countries, selectedCountry, selectedCurrency, setSelectedCountry } = useStorePreferences();
 
   useEffect(() => {
     document.title = 'watchyourtemper | Store';
@@ -41,8 +48,8 @@ const Store: React.FC = () => {
       setError(null);
 
       try {
-        const loaded = await fetchStoreProducts();
-        setProducts(loaded);
+          const loaded = await fetchStoreProducts(selectedCurrency);
+          setProducts(loaded);
       } catch (fetchError) {
         setError(fetchError instanceof Error ? fetchError.message : 'Unable to load products.');
       } finally {
@@ -51,7 +58,7 @@ const Store: React.FC = () => {
     };
 
     void loadProducts();
-  }, []);
+  }, [selectedCurrency]);
 
   useEffect(() => {
     if (!toast) {
@@ -61,6 +68,126 @@ const Store: React.FC = () => {
     const id = window.setTimeout(() => setToast(''), 2000);
     return () => window.clearTimeout(id);
   }, [toast]);
+
+  useEffect(() => {
+    setCheckoutForm((current) => (current.country === selectedCountry ? current : { ...current, country: selectedCountry }));
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (!isCheckoutModalOpen || !items.length) {
+      setShippingQuoteLoading(false);
+      setShippingQuoteError(null);
+      setShippingOptions([]);
+      setSelectedShippingRateId('');
+      setChargeSummary(null);
+      return;
+    }
+
+    const country = checkoutForm.country.trim().toUpperCase();
+    const state = checkoutForm.state.trim().toUpperCase();
+    const line1 = checkoutForm.line1.trim();
+    const city = checkoutForm.city.trim();
+    const postalCode = checkoutForm.postalCode.trim();
+    if (!country) {
+      setShippingQuoteError('Select a destination country to estimate shipping.');
+      setShippingOptions([]);
+      setSelectedShippingRateId('');
+      setChargeSummary(null);
+      return;
+    }
+
+    if (['US', 'CA', 'AU'].includes(country) && !state) {
+      setShippingQuoteError(`Enter a state or province for ${country} to estimate shipping.`);
+      setShippingOptions([]);
+      setSelectedShippingRateId('');
+      setChargeSummary(null);
+      return;
+    }
+
+    let active = true;
+    const abortController = new AbortController();
+    setShippingQuoteLoading(true);
+    setShippingQuoteError(null);
+
+    const timeoutId = window.setTimeout(() => {
+      void fetchShippingQuote({
+        items: items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+        })),
+        recipient: {
+          name: checkoutForm.name.trim() || undefined,
+          line1: line1 || undefined,
+          line2: checkoutForm.line2.trim() || undefined,
+          city: city || undefined,
+          state,
+          postalCode: postalCode || undefined,
+          country,
+        },
+        currency: selectedCurrency,
+        shippingRateId: selectedShippingRateId || undefined,
+      }, { signal: abortController.signal })
+        .then((quote) => {
+          if (!active) {
+            return;
+          }
+
+          setShippingOptions(quote.shippingOptions);
+          setSelectedShippingRateId(quote.selectedShippingRateId);
+          setChargeSummary(quote.chargeSummary);
+          if (!quote.chargeSummary) {
+            setShippingQuoteError('Enter full shipping details to calculate your final estimated charge.');
+          }
+        })
+        .catch((error) => {
+          if (!active) {
+            return;
+          }
+
+          if (error instanceof Error && error.name === 'AbortError') {
+            return;
+          }
+
+          const message = error instanceof Error ? error.message : 'Unable to estimate shipping.';
+          setShippingQuoteError(message === 'Load failed' ? 'Shipping quote request failed. Please try again in a moment.' : message);
+          setShippingOptions([]);
+          setSelectedShippingRateId('');
+          setChargeSummary(null);
+        })
+        .finally(() => {
+          if (active) {
+            setShippingQuoteLoading(false);
+          }
+        });
+    }, 500);
+
+    return () => {
+      active = false;
+      abortController.abort();
+      window.clearTimeout(timeoutId);
+    };
+  }, [
+    checkoutForm.city,
+    checkoutForm.country,
+    checkoutForm.line1,
+    checkoutForm.line2,
+    checkoutForm.name,
+    checkoutForm.postalCode,
+    checkoutForm.state,
+    isCheckoutModalOpen,
+    items,
+    selectedCurrency,
+    selectedShippingRateId,
+  ]);
+
+  const chargeExtras = useMemo(() => {
+    if (!chargeSummary) {
+      return 0;
+    }
+
+    return chargeSummary.tax + chargeSummary.vat + chargeSummary.digitization + chargeSummary.additionalFee + chargeSummary.fulfillmentFee + chargeSummary.retailDeliveryFee;
+  }, [chargeSummary]);
 
   const content = useMemo(() => {
     if (loading) {
@@ -103,25 +230,28 @@ const Store: React.FC = () => {
       return;
     }
 
-    if (items.length > 1) {
-      setToast('Checkout currently supports one cart item at a time.');
-      return;
-    }
-
     setCheckoutError(null);
+    setShippingQuoteError(null);
     setIsCheckoutModalOpen(true);
   };
 
   const updateCheckoutField = (field: keyof typeof checkoutForm, value: string) => {
     setCheckoutForm((current) => ({ ...current, [field]: value }));
+    if (field === 'country') {
+      setSelectedCountry(value.toUpperCase());
+    }
   };
 
   const handleCheckoutSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const [item] = items;
-    if (!item) {
+    if (!items.length) {
       setCheckoutError('Your cart is empty.');
+      return;
+    }
+
+    if (!selectedShippingRateId || !chargeSummary) {
+      setCheckoutError('Wait for shipping to be calculated before checkout.');
       return;
     }
 
@@ -130,12 +260,15 @@ const Store: React.FC = () => {
 
     try {
       const { payment } = await createCheckoutStart({
-        productId: item.productId,
-        variantId: item.variantId,
-        quantity: item.quantity,
+        items: items.map((item) => ({
+          productId: item.productId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+        })),
         customer: {
           email: checkoutForm.email.trim(),
         },
+        currency: selectedCurrency,
         shippingAddress: {
           name: checkoutForm.name.trim(),
           line1: checkoutForm.line1.trim(),
@@ -145,6 +278,7 @@ const Store: React.FC = () => {
           postalCode: checkoutForm.postalCode.trim(),
           country: checkoutForm.country.trim().toUpperCase(),
         },
+        shippingRateId: selectedShippingRateId,
       });
 
       window.location.assign(payment.checkoutUrl);
@@ -207,15 +341,91 @@ const Store: React.FC = () => {
             <div className="store-checkout-panel">
               <h3>Checkout</h3>
               <p className="store-modal-description">Enter your shipping details and we&apos;ll send you to Stripe to complete payment.</p>
-              {items[0] ? (
+              {items.length ? (
                 <div className="store-checkout-summary">
-                  <strong>{items[0].productTitle}</strong>
-                  <span>
-                    {items[0].color} • {items[0].size} • Qty {items[0].quantity}
-                  </span>
-                  <span>
-                    {items[0].currency} {(items[0].unitPrice * items[0].quantity).toFixed(2)}
-                  </span>
+                  <strong>{items.length === 1 ? items[0].productTitle : `${items.length} items in your cart`}</strong>
+                  <div className="store-checkout-lines">
+                    {items.map((item) => (
+                      <div key={item.key} className="store-checkout-line">
+                        <div className="store-checkout-line-copy">
+                          <span className="store-checkout-line-title">{item.productTitle}</span>
+                          <span className="store-checkout-line-meta">
+                            {item.color} • {item.size} • Qty {item.quantity}
+                          </span>
+                        </div>
+                        <span className="store-checkout-line-price">
+                          {item.currency} {(item.unitPrice * item.quantity).toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="store-checkout-totals">
+                    <span className="store-checkout-total-row">
+                      <span>Items subtotal</span>
+                      <strong>
+                        {currency} {subtotal.toFixed(2)}
+                      </strong>
+                    </span>
+                    {shippingQuoteLoading ? <span className="store-checkout-note">Calculating shipping…</span> : null}
+                    {shippingQuoteError ? <span className="store-checkout-note store-checkout-note-error">{shippingQuoteError}</span> : null}
+                  </div>
+                  {shippingOptions.length ? (
+                    <label>
+                      <span>Shipping option</span>
+                      <select
+                        value={selectedShippingRateId}
+                        onChange={(event) => setSelectedShippingRateId(event.target.value)}
+                        disabled={isCheckoutSubmitting}
+                      >
+                        {shippingOptions.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.name} - {option.currency} {option.rate.toFixed(2)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ) : null}
+                  {chargeSummary ? (
+                    <div className="store-checkout-totals">
+                      <span className="store-checkout-total-row">
+                        <span>Items subtotal</span>
+                        <strong>
+                          {chargeSummary.currency} {chargeSummary.itemSubtotal.toFixed(2)}
+                        </strong>
+                      </span>
+                      <span className="store-checkout-total-row">
+                        <span>Shipping</span>
+                        <strong>
+                          {chargeSummary.currency} {chargeSummary.shipping.toFixed(2)}
+                        </strong>
+                      </span>
+                      {chargeExtras > 0 ? (
+                        <span className="store-checkout-total-row">
+                          <span>Taxes & fees</span>
+                          <strong>
+                            {chargeSummary.currency} {chargeExtras.toFixed(2)}
+                          </strong>
+                        </span>
+                      ) : null}
+                      <span className="store-checkout-total-row store-checkout-total-row-strong">
+                        <span>Estimated charge</span>
+                        <strong>
+                          {chargeSummary.currency} {chargeSummary.total.toFixed(2)}
+                        </strong>
+                      </span>
+                      {selectedCurrency !== chargeSummary.currency ? (
+                        <span className="store-checkout-note">
+                          Shipping quotes use {selectedCurrency}, but final checkout charges in {chargeSummary.currency}.
+                        </span>
+                      ) : null}
+                    </div>
+                  ) : shippingOptions.length && !shippingQuoteLoading ? (
+                    <div className="store-checkout-totals">
+                      <span className="store-checkout-note">
+                        Select a shipping option now. Enter full shipping details to calculate your final estimated charge.
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
 
@@ -293,16 +503,21 @@ const Store: React.FC = () => {
                     />
                   </label>
                   <label>
-                    <span>Country code</span>
-                    <input
-                      type="text"
+                    <span>Country</span>
+                    <select
                       value={checkoutForm.country}
                       onChange={(event) => updateCheckoutField('country', event.target.value)}
-                      autoComplete="country"
-                      maxLength={2}
-                      placeholder="US"
                       required
-                    />
+                    >
+                      <option value="" disabled>
+                        Select country
+                      </option>
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.code}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
                   </label>
                 </div>
 

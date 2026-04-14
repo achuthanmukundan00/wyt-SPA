@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useStorePreferences } from './StorePreferencesContext';
 import type { StoreProduct, StoreVariant } from '../types/store';
 
 export type CartLineItem = {
@@ -11,6 +12,8 @@ export type CartLineItem = {
   variantName: string;
   size: string;
   color: string;
+  baseUnitPrice: number;
+  baseCurrency: string;
   unitPrice: number;
   currency: string;
   quantity: number;
@@ -34,9 +37,11 @@ const CartContext = createContext<CartContextValue | null>(null);
 const makeLineKey = (productId: string, variantId: string) => `${productId}::${variantId}`;
 
 const sanitizeQuantity = (value: number) => Math.max(1, Math.min(20, Math.floor(value)));
+const toMoney = (value: number) => Number(value.toFixed(2));
 
 export const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [items, setItems] = useState<CartLineItem[]>([]);
+  const { selectedCurrency, exchangeRates, baseCurrency } = useStorePreferences();
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -57,7 +62,12 @@ export const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       setItems(
         parsed
           .filter((item) => item && typeof item === 'object' && typeof item.key === 'string')
-          .map((item) => ({ ...item, quantity: sanitizeQuantity(item.quantity || 1) })),
+          .map((item) => ({
+            ...item,
+            baseUnitPrice: typeof item.baseUnitPrice === 'number' ? item.baseUnitPrice : item.unitPrice,
+            baseCurrency: typeof item.baseCurrency === 'string' ? item.baseCurrency : item.currency || baseCurrency,
+            quantity: sanitizeQuantity(item.quantity || 1),
+          })),
       );
     } catch {
       // ignore malformed persisted cart
@@ -73,6 +83,22 @@ export const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   }, [items]);
 
   const value = useMemo<CartContextValue>(() => {
+    const convertAmount = (amount: number, sourceCurrency: string) => {
+      const normalizedSource = sourceCurrency.toUpperCase();
+      const normalizedTarget = selectedCurrency.toUpperCase();
+
+      if (normalizedSource === normalizedTarget) {
+        return toMoney(amount);
+      }
+
+      if (normalizedSource !== baseCurrency.toUpperCase()) {
+        return toMoney(amount);
+      }
+
+      const rate = exchangeRates[normalizedTarget];
+      return rate ? toMoney(amount * rate) : toMoney(amount);
+    };
+
     const addItem: CartContextValue['addItem'] = ({ product, variant, quantity }) => {
       setItems((current) => {
         const key = makeLineKey(product.id, variant.id);
@@ -93,6 +119,8 @@ export const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
           variantName: variant.name,
           size: variant.size,
           color: variant.color,
+          baseUnitPrice: variant.basePrice ?? variant.price,
+          baseCurrency: variant.baseCurrency ?? variant.currency,
           unitPrice: variant.price,
           currency: variant.currency,
           quantity: sanitizeQuantity(quantity),
@@ -113,12 +141,21 @@ export const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
     const clearCart = () => setItems([]);
 
-    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-    const subtotal = Number(items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0).toFixed(2));
-    const currency = items[0]?.currency || 'USD';
+    const displayItems = items.map((item) => {
+      const displayUnitPrice = convertAmount(item.baseUnitPrice, item.baseCurrency);
+      return {
+        ...item,
+        unitPrice: displayUnitPrice,
+        currency: selectedCurrency,
+      };
+    });
+
+    const totalQuantity = displayItems.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = toMoney(displayItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0));
+    const currency = selectedCurrency || items[0]?.baseCurrency || 'USD';
 
     return {
-      items,
+      items: displayItems,
       totalQuantity,
       subtotal,
       currency,
@@ -127,7 +164,7 @@ export const CartProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
       updateQuantity,
       clearCart,
     };
-  }, [items]);
+  }, [baseCurrency, exchangeRates, items, selectedCurrency]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
