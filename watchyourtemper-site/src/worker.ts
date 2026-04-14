@@ -7,6 +7,16 @@ type DurableObjectNamespaceLike = {
   get(id: unknown): { fetch(request: Request): Promise<Response> };
 };
 
+type DurableObjectStorageLike = {
+  get<T>(key: string): Promise<T | undefined>;
+  put<T>(key: string, value: T): Promise<void>;
+  delete(key: string): Promise<boolean | void>;
+};
+
+type DurableObjectStateLike = {
+  storage: DurableObjectStorageLike;
+};
+
 export interface Env {
   ASSETS?: AssetFetcher;
   ORDER_STORE: DurableObjectNamespaceLike;
@@ -788,7 +798,8 @@ const printfulRequest = async <T>(
         path: input.path,
         status: response.status,
         reason,
-        payload,
+        code: payload.code,
+        error: payload.error,
       });
       throw new Error(`Printful request failed: ${reason}`);
     }
@@ -1956,9 +1967,9 @@ const handleApiRequest = async (request: Request, env: Env) => {
 };
 
 export class OrderStoreDurableObject {
-  private readonly state: any;
+  private readonly state: DurableObjectStateLike;
 
-  constructor(state: any) {
+  constructor(state: DurableObjectStateLike) {
     this.state = state;
   }
 
