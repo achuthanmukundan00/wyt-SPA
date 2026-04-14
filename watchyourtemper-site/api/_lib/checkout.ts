@@ -1,10 +1,18 @@
 import type { CheckoutIntent } from './types';
+import type { ShippingAddress } from './orderStore';
 import { getStoreProductByIdOrSlug } from './printfulClient';
 
 export type CheckoutIntentInput = {
   productId: string;
   variantId: string;
   quantity: number;
+};
+
+export type CheckoutStartInput = CheckoutIntentInput & {
+  customer: {
+    email: string;
+  };
+  shippingAddress: ShippingAddress;
 };
 
 export const parseCheckoutInput = (body: unknown): CheckoutIntentInput => {
@@ -31,6 +39,49 @@ export const parseCheckoutInput = (body: unknown): CheckoutIntentInput => {
     productId: parsed.productId,
     variantId: parsed.variantId,
     quantity,
+  };
+};
+
+const parseShippingAddress = (value: unknown): ShippingAddress => {
+  if (!value || typeof value !== 'object') {
+    throw new Error('shippingAddress is required.');
+  }
+
+  const shipping = value as Partial<ShippingAddress>;
+
+  const requiredFields: Array<keyof ShippingAddress> = ['name', 'line1', 'city', 'state', 'postalCode', 'country'];
+  for (const field of requiredFields) {
+    const fieldValue = shipping[field];
+    if (!fieldValue || typeof fieldValue !== 'string') {
+      throw new Error(`shippingAddress.${field} is required.`);
+    }
+  }
+
+  return {
+    name: shipping.name!,
+    line1: shipping.line1!,
+    line2: typeof shipping.line2 === 'string' ? shipping.line2 : undefined,
+    city: shipping.city!,
+    state: shipping.state!,
+    postalCode: shipping.postalCode!,
+    country: shipping.country!,
+  };
+};
+
+export const parseCheckoutStartInput = (body: unknown): CheckoutStartInput => {
+  const base = parseCheckoutInput(body);
+  const parsed = body as { customer?: { email?: string }; shippingAddress?: unknown };
+
+  if (!parsed.customer?.email || typeof parsed.customer.email !== 'string') {
+    throw new Error('customer.email is required.');
+  }
+
+  return {
+    ...base,
+    customer: {
+      email: parsed.customer.email,
+    },
+    shippingAddress: parseShippingAddress(parsed.shippingAddress),
   };
 };
 

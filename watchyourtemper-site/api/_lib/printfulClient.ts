@@ -32,6 +32,31 @@ type PrintfulStoreProductResult = {
   sync_variants: PrintfulSyncVariant[];
 };
 
+
+type PrintfulOrderCreateInput = {
+  externalId: string;
+  recipient: {
+    name: string;
+    address1: string;
+    address2?: string;
+    city: string;
+    state_code: string;
+    zip: string;
+    country_code: string;
+    email: string;
+  };
+  items: Array<{
+    variant_id: number;
+    quantity: number;
+  }>;
+};
+
+type PrintfulOrderCreateResult = {
+  id: number;
+  external_id?: string;
+  status?: string;
+};
+
 const parseVariantName = (name: string): { color: string; size: string } => {
   const parts = name.split('/').map((item) => item.trim()).filter(Boolean);
   if (parts.length >= 2) {
@@ -60,18 +85,19 @@ const getAccessToken = (): string => {
   return token;
 };
 
-const printfulRequest = async <T>(path: string): Promise<T> => {
+const printfulRequest = async <T>(path: string, options?: { method?: 'GET' | 'POST'; body?: unknown }): Promise<T> => {
   const token = getAccessToken();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
     const response = await fetch(`${PRINTFUL_API_BASE}${path}`, {
-      method: 'GET',
+      method: options?.method || 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+      body: options?.body ? JSON.stringify(options.body) : undefined,
       signal: controller.signal,
     });
 
@@ -140,4 +166,16 @@ export const getStoreProductByIdOrSlug = async (idOrSlug: string) => {
 
   const products = await getStoreProducts();
   return products.find((item) => item.id === idOrSlug || item.slug === idOrSlug) || null;
+};
+
+
+export const createPrintfulOrder = async (input: PrintfulOrderCreateInput) => {
+  return printfulRequest<PrintfulOrderCreateResult>('/orders', {
+    method: 'POST',
+    body: {
+      external_id: input.externalId,
+      recipient: input.recipient,
+      items: input.items,
+    },
+  });
 };
