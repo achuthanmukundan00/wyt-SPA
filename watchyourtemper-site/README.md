@@ -96,14 +96,21 @@ This site links to a private supporters' mailing list through [MailerLite](https
 ---
 
 
-## 🛒 Store (Stripe Payment Links)
+## 🛒 Store (Stripe now, Printful API-ready path)
 
-The merch store is frontend-only and uses hosted Stripe Payment Links.
+The current merch store is frontend-only and uses hosted Stripe Payment Links.
 
 - Edit product data in `src/data/storeProducts.ts`.
 - Paste each Stripe URL into `stripeUrl` and set `enabled: true` for products you want live.
 - Add product images to `public/assets/images/store/` and set each product `image` path (example: `/assets/images/store/watchyourtemper-tee.jpg`).
 - Store UI route/page lives at `src/pages/Store.tsx` and is available at `/store`.
+
+### Printful API note
+
+You can integrate Printful, but **not directly from browser-only code** (API token exposure risk).
+Use a backend/serverless layer to create orders after successful checkout.
+
+See implementation notes in `docs-printful-integration.md`.
 
 Files changed for this feature:
 - `src/data/storeProducts.ts`
