@@ -26,11 +26,18 @@
 - Deployment will use a platform that supports `api/` serverless routes.
 - Current phase prepares payment and order automation but does not process live payment yet.
 
-## Next steps
+## Lifecycle status
 
-1. Connect checkout intent response to payment session/intent creation.
-2. Create Printful order after payment confirmation.
-3. Add webhook endpoints for fulfillment/tracking updates.
+1. ✅ Checkout intent is connected to payment-session creation via `POST /api/store/checkout-start`.
+2. ✅ Printful order creation occurs after payment confirmation in Stripe webhook handling.
+3. ✅ Webhook endpoints exist for fulfillment/tracking updates.
+4. ✅ Frontend now uses modal-based variant selection + persistent cart UX.
+
+## Pricing and charge integrity
+
+- Use Printful variant `retail_price` as the canonical catalog price.
+- Recompute line-item totals server-side (product + variant + quantity) before creating Stripe session.
+- Never trust browser-submitted unit prices.
 
 
 ## v2 lifecycle env vars
