@@ -23,7 +23,7 @@ export const storeProducts: StoreProduct[] = [
     variant: 'Unisex / S-2XL',
     image: '/assets/images/store/pressure-test-tee.png', // TODO: e.g. /assets/images/store/pressure-test-tee.png
     stripeUrl: 'https://buy.stripe.com/dRmbJ16A51dbgMRdAN48003',
-    enabled: true,
+    enabled: false,
   },
   {
     id: 'pressure-test-hoodie',
@@ -33,7 +33,7 @@ export const storeProducts: StoreProduct[] = [
     variant: 'Unisex / S-2XL',
     image: '/assets/images/store/pressure-test-hoodie.png', 
     stripeUrl: 'https://buy.stripe.com/14AaEX8IddZX8glfIV48002',
-    enabled: true,
+    enabled: false,
   },
   {
     id: 'watchyourtemper-tee',
@@ -43,7 +43,7 @@ export const storeProducts: StoreProduct[] = [
     variant: 'Unisex / S-2XL',
     image: '/assets/images/store/watchyourtemper-tee.png', 
     stripeUrl: 'https://buy.stripe.com/14AbJ1aQl7BzeEJ68l48001', 
-    enabled: true,
+    enabled: false,
   },
   {
     id: 'watchyourtemper-tote',
@@ -53,6 +53,6 @@ export const storeProducts: StoreProduct[] = [
     variant: 'One Size',
     image: '/assets/images/store/watchyourtemper-tote.png',
     stripeUrl: 'https://buy.stripe.com/eVqcN56A5dZXaot0O148000',
-    enabled: true,
+    enabled: false,
   },
 ];
