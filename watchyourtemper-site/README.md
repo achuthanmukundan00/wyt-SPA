@@ -1,6 +1,6 @@
 # WATCHYOURTEMPER
 
-**Your rage is sacred. Let it speak.**
+**Enter here.**
 
 This is the official interactive website for [WatchYourTemper](https://www.instagram.com/watchyourtemper)
 
@@ -72,22 +72,6 @@ npm install
 ```bash
 npm run dev
 ```
-
----
-
-## 🧟‍♀️ Design Philosophy
-
-This site is not a product — it’s a **ritual**.
-
-No unnecessary hover states. No rounded corners. No algorithm-chasing fluff.
-
-Instead, it leans into:
-
-* **Corruption** over clarity
-* **Silence** over spectacle
-* **Feeling** over functionality
-
----
 
 ## 🩸 Inner Circle
 
