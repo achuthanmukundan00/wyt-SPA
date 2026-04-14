@@ -905,6 +905,51 @@ h2 {
   background: transparent;
 }
 
+
+.store-variant-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+}
+
+.store-variant-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a7a7a7;
+}
+
+.store-variant-row select,
+.store-variant-row input {
+  background: #0a0a0a;
+  border: 1px solid #2b2b2b;
+  color: #d6d6d6;
+  font-size: 0.78rem;
+  padding: 0.38rem 0.45rem;
+  font-family: inherit;
+}
+
+.store-state {
+  text-align: center;
+  color: #a7a7a7;
+  letter-spacing: 0.08em;
+}
+
+.store-state-error {
+  color: #d58d8d;
+}
+
+.store-intent-status {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #9ccda5;
+  letter-spacing: 0.04em;
+}
+
 /* ================= STORE: ANIMATIONS ================= */
 @keyframes scan-drift {
   0% {
