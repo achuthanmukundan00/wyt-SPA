@@ -417,6 +417,8 @@ const PRODUCT_DESCRIPTIONS: Record<string, string> = {
     'Essential watchyourtemper tee featuring the core project mark in a clean everyday fit.',
   'watchyourtemper-tote':
     '100% certified organic cotton tote, to help carry your burdens.',
+  'watchyourtemper-hoodie':
+    'Medium weight cotton hoodie printed with the core project mark.',
 };
 
 const getProductDescription = (title: string, slug: string) => {
