@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import AudioPlayer from './components/AudioPlayer';
+import SignalScreen from './components/SignalScreen';
 import Home from './pages/Home';
 import FeedTheMachine from './pages/FeedTheMachine';
 import Join from './pages/Join';
@@ -8,6 +8,7 @@ import Store from './pages/Store';
 import StoreCancel from './pages/StoreCancel';
 import StoreSuccess from './pages/StoreSuccess';
 import './styles/index.css';
+import './styles/artist.css';
 
 const AppLayout: React.FC = () => {
   const location = useLocation();
@@ -15,7 +16,7 @@ const AppLayout: React.FC = () => {
 
   return (
     <>
-      <AudioPlayer />
+      <SignalScreen />
       <Navbar variant={isHomeRoute ? 'overlay' : 'solid'} />
       <div className={`route-shell ${isHomeRoute ? 'route-shell--overlay' : ''}`}>
         <Routes>

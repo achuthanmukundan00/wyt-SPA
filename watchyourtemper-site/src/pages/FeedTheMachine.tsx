@@ -1,71 +1,33 @@
-import "../styles/index.css";
+import '../styles/artist.css';
 
-const FeedTheMachine: React.FC = () => {
-  return (
-    <div className="feed-page dark-corner">
-      {/* <div className="grain-overlay" /> */}
-      <div className="vignette" />
+const channels = [
+  ['Bandcamp', 'https://watchyourtemper.bandcamp.com', '/icons/bandcamp.png'],
+  ['Spotify', 'https://open.spotify.com/artist/4J2nrkMqpsfDQcZgSalbht?si=0BOws4dHSginwoO28iy90A', '/icons/spotify.png'],
+  ['Apple Music', 'https://music.apple.com/ca/artist/watchyourtemper/1768341683', '/icons/apple_music.png'],
+  ['YouTube Music', 'https://music.youtube.com/channel/UCPBklxjs8z1T4-aKNuCgyXQ?si=G5dHuNlRjJnzgLiK', '/icons/youtube_music.png'],
+  ['Tidal', 'https://tidal.com/browse/artist/50451699?u', '/icons/tidal.png'],
+];
 
-      <div className="machine-wrapper">
-        <div className="machine-left" />
+export const ListeningChannels: React.FC = () => (
+  <div className="channels">
+    {channels.map(([name, href, icon]) => (
+      <a className="channel" key={name} href={href} target="_blank" rel="noopener noreferrer">
+        <img className="channel-icon" src={icon} alt="" width="48" height="48" loading="lazy" />
+        <span className="channel-name">{name}</span><span aria-hidden="true">↗</span>
+        <span className="sr-only"> (opens in a new tab)</span>
+      </a>
+    ))}
+  </div>
+);
 
-        <div className="machine-divider" />
-
-        <div className="machine-right">
-          <h2 className="machine-title terminal-flicker glitch-text">ENTER HERE.</h2>
-          <p className="machine-sub">SELECT A CHANNEL</p>
-
-          <div className="machine-links">
-            <a
-              className="feed-btn"
-              href="https://watchyourtemper.bandcamp.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/icons/bandcamp.png" alt="Bandcamp" className="btn-icon" />
-              BANDCAMP
-            </a>
-            <a
-              className="feed-btn"
-              href="https://open.spotify.com/artist/4J2nrkMqpsfDQcZgSalbht?si=0BOws4dHSginwoO28iy90A"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/icons/spotify.png" alt="Spotify" className="btn-icon" />
-              SPOTIFY
-            </a>
-            <a
-              className="feed-btn"
-              href="https://music.apple.com/ca/artist/watchyourtemper/1768341683"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/icons/apple_music.png" alt="Apple Music" className="btn-icon" />
-              APPLE MUSIC
-            </a>
-            <a
-              className="feed-btn"
-              href="https://music.youtube.com/channel/UCPBklxjs8z1T4-aKNuCgyXQ?si=G5dHuNlRjJnzgLiK"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/icons/youtube_music.png" alt="Youtube Music" className="btn-icon" />
-              YOUTUBE MUSIC
-            </a>
-            <a
-              className="feed-btn"
-              href="https://tidal.com/browse/artist/50451699?u"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/icons/tidal.png" alt="Tidal" className="btn-icon" />
-              TIDAL
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+const FeedTheMachine: React.FC = () => (
+  <main className="artist-content artist-machine">
+    <section className="listening">
+      <h1 className="display">Listen</h1>
+      <ListeningChannels />
+    </section>
+    <footer className="site-footer"><p>Made with ❤️ in Toronto, Ontario, Canada</p></footer>
+  </main>
+);
 
 export default FeedTheMachine;

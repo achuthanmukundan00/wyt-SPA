@@ -22,14 +22,21 @@ const Navbar: React.FC<NavbarProps> = ({ variant }) => {
     setSelectedCurrency,
   } = useStorePreferences();
 
+  // The selected home composition owns its compact bottom-left navigation.
+  if (variant === 'overlay') return null;
+
   return (
-    <nav className={`nav-top ${variant === 'solid' ? 'nav-solid' : ''}`}>
+    <nav className={`nav-top ${variant === 'solid' ? 'nav-solid' : ''}`} aria-label="Primary navigation">
       <div className="nav-left">
         <Link to="/">
           <img
-            src="/assets/images/logo.png"
+            src="/assets/images/logo.webp"
             alt="watchyourtemper"
             className="nav-logo"
+            width="2516"
+            height="633"
+            decoding="async"
+            fetchPriority="high"
           />
         </Link>
       </div>
