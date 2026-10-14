@@ -34,9 +34,8 @@
 }
 * { box-sizing: border-box; }
 html { background: var(--paper); scroll-behavior: smooth; scroll-padding: 2rem 0 6rem; }
-/* The in-document filter remains available in Firefox and other engines that
-   reject cross-document SVG filter references. */
-html[data-crt='on'] { filter: url("/#crt-glass-warp"); }
+/* Rasterize the composed page through one in-document CRT pass. */
+html[data-crt='on'] { filter: url(#crt-glass-warp); }
 .crt-filter-defs { position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none; }
 body { margin: 0; background: var(--paper); color: var(--ink); font: var(--ui)/1.5 'Space Grotesk', sans-serif; min-width: 320px; }
 [hidden] { display: none !important; }
@@ -63,30 +62,32 @@ a, button, summary { touch-action: manipulation; }
 .threshold-entry { position: relative; min-height: max(48rem, 100svh); display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 2rem; color: var(--ink); background: #080909; }
 .threshold-image { position: absolute; inset: 0; overflow: hidden; }
 .threshold-image img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(.75) saturate(.45); }
-.threshold-image canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
-.threshold-image[data-hero-crt='on'] canvas { display: block; }
-.threshold-image[data-hero-crt='on'] img { visibility: hidden; }
-/* The transparent screen pass overlays composed DOM, including foreground
-   text. CSS preserves its phosphor lattice when WebGL2 is unavailable. */
+/* Native, non-interactive phosphor texture complements the page-level raster pass. */
 .crt-glue, .crt-grain { display: none; position: fixed; pointer-events: none; user-select: none; }
 html[data-crt='on'] .crt-glue, html[data-crt='on'] .crt-grain { display: block; }
-html[data-crt-renderer='webgl'] .crt-glue,
-html[data-crt-renderer='webgl'] .crt-grain { display: none !important; }
-.crt-shader-layer {
-  display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh;
-  z-index: 2147483000; pointer-events: none; user-select: none;
-}
-html[data-crt='on'] .crt-shader-layer { display: block; }
+/* Bowed glass cues: curved edge falloff, a restrained center bloom, and occasional gentle flicker. */
 .crt-glue {
   inset: 0; z-index: 5000;
-  background: radial-gradient(ellipse at center, transparent 54%, rgba(0, 0, 0, .38) 100%);
-  opacity: .75;
+  border-radius: 2.4vw / 1.6vh;
+  background:
+    radial-gradient(ellipse 78% 74% at 50% 48%, rgba(190, 212, 255, .045), transparent 72%),
+    radial-gradient(ellipse at center, transparent 42%, rgba(0, 0, 0, .55) 100%);
+  box-shadow: inset 0 0 0 1px rgba(220, 232, 255, .055), inset 0 0 6vw rgba(0, 0, 0, .18), inset 0 0 1.5rem rgba(190, 212, 255, .035);
+  opacity: .82;
+  animation: crt-flicker 7s steps(1, end) infinite;
+}
+@keyframes crt-flicker {
+  0%, 100% { opacity: .82; }
+  33% { opacity: .78; }
+  34% { opacity: .82; }
+  70% { opacity: .79; }
+  71% { opacity: .82; }
 }
 .crt-grain {
   inset: 0; z-index: 5001;
   background:
-    repeating-linear-gradient(to bottom, transparent 0 5px, rgba(0, 0, 0, .22) 5px 6px),
-    repeating-linear-gradient(to right, rgba(255, 108, 88, .08) 0 1px, rgba(135, 255, 168, .045) 1px 2px, rgba(128, 153, 255, .08) 2px 3px);
+    repeating-linear-gradient(to bottom, transparent 0 6px, rgba(0, 0, 0, .38) 6px 8px),
+    repeating-linear-gradient(to right, rgba(255, 108, 88, .15) 0 2px, rgba(135, 255, 168, .12) 2px 4px, rgba(128, 153, 255, .16) 4px 6px);
 }
 .threshold-image:after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #080909f2, transparent 38%, #08090922 75%, #08090977), radial-gradient(ellipse at center, transparent 35%, #08090988); }
 .threshold-headroom { height: 5.75rem; flex: none; }
@@ -218,7 +219,7 @@ html[data-crt='on'] .crt-shader-layer { display: block; }
 }
 @media (forced-colors: active) {
   html { filter: none !important; }
-  .threshold-image, .crt-glue, .crt-grain, .crt-shader-layer { display: none !important; }
+  .threshold-image, .crt-glue, .crt-grain { display: none !important; }
   .threshold-entry { color: CanvasText; background: Canvas; }
   .pressure-mark { filter: none !important; }
   .site-controls, .audio-position__panel, #sound-status { background: Canvas; color: CanvasText; border: 1px solid ButtonText; }
@@ -263,5 +264,5 @@ body { font-size: var(--ui); }
 
 .nav-top a:hover { animation: none; transform: none; filter: none; text-shadow: none; }
 
-/* The hero photograph extends past its aperture so curved shader edges never reveal the page behind it. */
+/* Overscan keeps beam displacement at the hero edges from revealing the page behind it. */
 body[data-site='pressure'] .threshold-image img { inset: -24px; width: calc(100% + 48px); height: calc(100% + 48px); max-width: none; }

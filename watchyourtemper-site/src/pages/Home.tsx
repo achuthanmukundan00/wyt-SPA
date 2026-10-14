@@ -1,19 +1,14 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ListeningChannels } from './FeedTheMachine';
-import { initHeroCRT } from '../components/heroCrt';
 import '../styles/artist.css';
 
 const Home: React.FC = () => {
   useEffect(() => { document.title = 'watchyourtemper'; }, []);
-  useEffect(() => initHeroCRT(), []);
   return (
     <main className="artist-home" id="mockup" data-mode="dark">
       <a className="skip-link" href="#article">Skip to content</a>
       <section className="threshold-entry">
-        <div className="threshold-image" aria-hidden="true">
-          <img src="/assets/images/chains.webp" alt="" width="1440" height="810" decoding="async" fetchPriority="high" />
-        </div>
         <div className="threshold-headroom" aria-hidden="true" />
         <div className="threshold-mark">
           <h1 className="brand">
