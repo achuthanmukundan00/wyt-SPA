@@ -5,7 +5,7 @@ import { pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { preview } from 'vite';
 
-// Browser checks for the built site (run `CF_PAGES=1 npm run build` first).
+// Browser checks for the built site (run `npm run build` first).
 // Disposable browsers, mocked APIs, blocked external services. Never submits payment.
 const { values } = parseArgs({ options: { 'playwright-module': { type: 'string' } } });
 assert(values['playwright-module'], 'Pass an existing @playwright/test/index.mjs path');

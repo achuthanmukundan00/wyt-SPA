@@ -1,5 +1,8 @@
 {
   "name": "watchyourtemper-api",
+  // The "watchyourtemper" Cloudflare account (log in as hello.watchyourtemper@gmail.com).
+  // Pinned so a deploy with any other login fails instead of creating a stray Worker.
+  "account_id": "2be661efcc5940eba07b8f005d627a91",
   "main": "watchyourtemper-site/src/worker.ts",
   "compatibility_date": "2026-04-14",
   "durable_objects": {

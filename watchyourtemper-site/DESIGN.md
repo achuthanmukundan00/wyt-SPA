@@ -41,12 +41,12 @@ Existing artwork and audio rights still need the owner's publication clearance; 
 npm run lint
 npm run typecheck:worker
 npm test
-CF_PAGES=1 npm run build
+npm run build
 node scripts/design-check.mjs --playwright-module /absolute/path/to/@playwright/test/index.mjs
 ```
 
 The browser script needs an existing Playwright module and installed Google Chrome. It serves the built `dist/`, mocks the store APIs, blocks other external requests and never submits payment. At six widths it checks no navbar, two type sizes, a silent entrance, the CRT screen and its remembered switch, the routes, product options, cart and checkout, that layers sit under the screen, and that typed text appears on the screen; then the no-JavaScript fallback. Screenshots go to the ignored `design-results/`.
 
-To try the store against the real Worker, build as above and run `npx wrangler dev` from the repository root (`npm run dev` does not run the Worker, since `wrangler.jsonc` sits one level up). Do not submit a checkout locally: `.dev.vars` holds live credentials.
+To try the store against the real Worker, build as above and run `npx wrangler dev` from the repository root (`npm run dev` serves the front end only). Do not submit a checkout locally: `.dev.vars` holds live credentials. To deploy, see `../AGENTS.md`.
 
 Not established by these checks: real-device performance, Safari, and a live checkout. Firefox 158 was driven headless through the home page, scrolling and checkout, with the screen on and scrolling at 60fps.

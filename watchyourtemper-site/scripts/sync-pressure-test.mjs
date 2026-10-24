@@ -4,7 +4,8 @@ import { resolve } from 'node:path';
 // PRESSURE TEST is published at watchyourtemper.com/pressure-test/ from this
 // site's assets. Build it in its own repository (npm run check there), then run
 // this from watchyourtemper-site/ to copy its dist/ into public/pressure-test/
-// and its security headers into public/_headers, and commit the result.
+// and its security headers into public/_headers, commit the result, push, and
+// deploy with ../deploy.sh (see ../AGENTS.md).
 const source = resolve(process.argv[2] ?? '../../pressure-test');
 const dist = resolve(source, 'dist');
 const target = resolve('public/pressure-test');
