@@ -41,7 +41,7 @@ const AudioPlayer: React.FC = () => {
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4Z" />{playing ? <path d="M16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" /> : <path d="m17 10 4 4m0-4-4 4" />}</svg>
       </button>
       <details className="audio-position" id="soundtrack-controls">
-        <summary>Position</summary>
+        <summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4.5M11.5 12H21" /><circle cx="9" cy="12" r="2.5" /></svg><span className="sr-only">Position</span></summary>
         <div className="audio-position__panel">
           <p>watchyourtemper / pressure_test_web</p>
           <label><span className="sr-only">Soundtrack position</span><input type="range" min="0" max={duration || 157} step="1" value={current} disabled={failed || !duration}

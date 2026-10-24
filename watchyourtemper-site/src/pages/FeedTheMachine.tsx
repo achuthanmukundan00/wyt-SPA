@@ -1,4 +1,6 @@
-import '../styles/artist.css';
+import { useEffect } from 'react';
+import Masthead from '../components/Masthead';
+import SiteFooter from '../components/SiteFooter';
 
 const channels = [
   ['Bandcamp', 'https://watchyourtemper.bandcamp.com', '/icons/bandcamp.png'],
@@ -9,25 +11,33 @@ const channels = [
 ];
 
 export const ListeningChannels: React.FC = () => (
-  <div className="channels">
+  <ul className="channels">
     {channels.map(([name, href, icon]) => (
-      <a className="channel" key={name} href={href} target="_blank" rel="noopener noreferrer">
-        <img className="channel-icon" src={icon} alt="" width="48" height="48" loading="lazy" />
-        <span className="channel-name">{name}</span><span aria-hidden="true">↗</span>
-        <span className="sr-only"> (opens in a new tab)</span>
-      </a>
+      <li key={name}>
+        <a className="channel" href={href} target="_blank" rel="noopener noreferrer">
+          <img className="channel-icon" src={icon} alt="" width="48" height="48" loading="lazy" />
+          <span className="channel-name">{name}</span><span aria-hidden="true">↗</span>
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </li>
     ))}
-  </div>
+  </ul>
 );
 
-const FeedTheMachine: React.FC = () => (
-  <main className="artist-content artist-machine">
-    <section className="listening">
-      <h1 className="display">Listen</h1>
-      <ListeningChannels />
-    </section>
-    <footer className="site-footer"><p>Made with ❤️ in Toronto, Ontario, Canada</p></footer>
-  </main>
-);
+const FeedTheMachine: React.FC = () => {
+  useEffect(() => { document.title = 'watchyourtemper | Listen'; }, []);
+  return (
+    <main className="site">
+      <Masthead />
+      <div className="content">
+        <section className="block listening" aria-labelledby="listen-title">
+          <h1 className="block__name" id="listen-title">Listen</h1>
+          <ListeningChannels />
+        </section>
+      </div>
+      <SiteFooter />
+    </main>
+  );
+};
 
 export default FeedTheMachine;

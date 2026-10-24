@@ -1,64 +1,55 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ListeningChannels } from './FeedTheMachine';
-import '../styles/artist.css';
+import SiteFooter from '../components/SiteFooter';
 
+const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
+const newTab = <span className="sr-only"> (opens in a new tab)</span>;
+
+// No navbar: the wordmark and one way in, then the page as one piece, with its
+// links in the sections and the footer.
 const Home: React.FC = () => {
   useEffect(() => { document.title = 'watchyourtemper'; }, []);
   return (
-    <main className="artist-home" id="mockup" data-mode="dark">
-      <a className="skip-link" href="#article">Skip to content</a>
+    <main className="site artist-home" data-mode="dark">
+      <a className="skip-link" href="#content">Skip to content</a>
       <section className="threshold-entry">
-        <div className="threshold-headroom" aria-hidden="true" />
-        <div className="threshold-mark">
-          <h1 className="brand">
-            <Link to="/" aria-label="watchyourtemper">
-              <img className="artist-mark" src="/assets/images/wordmark-transparent.webp" alt="watchyourtemper" width="2407" height="498" fetchPriority="high" />
-            </Link>
-          </h1>
-        </div>
+        <h1 className="threshold-mark">
+          <img className="artist-mark" src="/assets/images/wordmark-transparent.webp" alt="watchyourtemper" width="2407" height="498" fetchPriority="high" />
+        </h1>
         <div className="threshold-bottom">
-          <a className="enter display" href="#article">feed the machine <span aria-hidden="true">↓</span></a>
-          <nav className="primary-nav" aria-label="Primary navigation">
-            <a href="#article">Listen</a>
-            <Link to="/store">Store <span aria-hidden="true">↗</span></Link>
-            <a href="/join" target="_blank" rel="noopener noreferrer">Join ↗<span className="sr-only"> (opens in a new tab)</span></a>
-            <a href="/pressure-test/">PRESSURE TEST <span aria-hidden="true">↗</span></a>
-          </nav>
+          <a className="enter display" href="#content">feed the machine <span aria-hidden="true">↓</span></a>
         </div>
       </section>
-      <article id="article" className="artist-content" tabIndex={-1}>
-        <section id="listen" className="listening">
-          <h2>Listen</h2>
+      <div id="content" className="content" tabIndex={-1}>
+        <section id="listen" className="block listening" aria-labelledby="listen-title">
+          <h2 className="block__name" id="listen-title">Listen</h2>
           <ListeningChannels />
-          <p>watchyourtemper on Bandcamp, Spotify, Apple Music, YouTube Music and Tidal. <a href="https://soundcloud.com/watchyourtemper" target="_blank" rel="noopener noreferrer">SoundCloud ↗<span className="sr-only"> (opens in a new tab)</span></a></p>
+          <p className="answer">watchyourtemper on Bandcamp, Spotify, Apple Music, YouTube Music and Tidal. <a className="text-link" href="https://soundcloud.com/watchyourtemper" {...external}>SoundCloud&nbsp;↗{newTab}</a></p>
         </section>
-        <section id="pressure" className="related">
-          <div>
-            <h2>PRESSURE TEST</h2>
-            <p>A Toronto music series presented and operated by RYTHM CORPORATION, created by watchyourtemper. Artists play 25 to 40 minutes of their own material. All genres welcome.</p>
-            <p>Live sets from local artists. New work, unfinished tracks, and experiments. All sounds welcome.</p>
-            <a href="/pressure-test/">Enter PRESSURE TEST ↗</a>
-          </div>
-          <img src="/assets/images/pressure-test-v1-0.jpg" alt="Original PRESSURE TEST v1.0 poster" width="1280" height="1600" loading="lazy" />
-        </section>
-        <section className="artist-destinations">
-          <h2>Elsewhere</h2>
-          <div>
-            <Link to="/store">Store ↗</Link>
-            <a href="/join" target="_blank" rel="noopener noreferrer">Join the mailing list ↗<span className="sr-only"> (opens in a new tab)</span></a>
-            <a href="https://www.instagram.com/watchyourtemper/" target="_blank" rel="noopener noreferrer">Instagram ↗<span className="sr-only"> (opens in a new tab)</span></a>
+        <section id="pressure" className="block related" aria-labelledby="pressure-title">
+          <h2 className="block__name" id="pressure-title">PRESSURE TEST</h2>
+          <figure className="related__poster">
+            <img src="/assets/images/pressure-test-v1-0.jpg" alt="Original PRESSURE TEST v1.0 poster" width="1280" height="1600" loading="lazy" />
+          </figure>
+          <div className="answer">
+            <p>A Toronto music series presented and operated by RYTHM CORPORATION, created by watchyourtemper. Artists play 25 to 40 minutes of their own material. Experimental Forward.</p>
+            <p>Live sets from local artists. New work, unfinished tracks, and experiments.</p>
+            <a className="text-link" href="/pressure-test/">Enter PRESSURE TEST&nbsp;↗</a>
           </div>
         </section>
-      </article>
-      <footer className="site-footer">
-        <p>Made with ❤️ in Toronto, Ontario, Canada</p>
-        <p>watchyourtemper<br />Toronto, Canada</p>
-        <div>
-          <a href="https://www.instagram.com/watchyourtemper/" target="_blank" rel="noopener noreferrer">Instagram ↗<span className="sr-only"> (opens in a new tab)</span></a>
-          <a href="/pressure-test/">PRESSURE TEST ↗</a>
-        </div>
-      </footer>
+        <section className="block elsewhere" aria-labelledby="elsewhere-title">
+          <h2 className="block__name" id="elsewhere-title">Elsewhere</h2>
+          <ul className="elsewhere__links">
+            <li><Link to="/store">Store</Link></li>
+            <li><a href="/join" {...external}>Join the mailing list&nbsp;↗{newTab}</a></li>
+            <li><a href="https://www.instagram.com/watchyourtemper/" {...external}>Instagram&nbsp;↗{newTab}</a></li>
+            <li><a href="https://www.tiktok.com/@watchyourtemper" {...external}>TikTok&nbsp;↗{newTab}</a></li>
+            <li><a href="https://www.youtube.com/@watchyourtemper" {...external}>YouTube&nbsp;↗{newTab}</a></li>
+          </ul>
+        </section>
+      </div>
+      <SiteFooter />
     </main>
   );
 };

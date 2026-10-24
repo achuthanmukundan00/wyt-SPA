@@ -275,4 +275,23 @@ describe('worker helpers', () => {
 
     expect(summary.total).toBe(63);
   });
+
+  test('passes through only https pictures from Printful\'s CDN', () => {
+    const ok = 'https://files.cdn.printful.com/files/15c/15ce5874846a3c5fa77ac00e910b0e86_preview.png';
+    expect(__testables.parseStoreImageSource(ok)?.toString()).toBe(ok);
+    for (const bad of [
+      null,
+      '',
+      'not a url',
+      'http://files.cdn.printful.com/files/a.png',
+      'https://files.cdn.printful.com.evil.example/files/a.png',
+      'https://evil.example/?files.cdn.printful.com',
+      'https://user:pass@files.cdn.printful.com/files/a.png',
+      'https://files.cdn.printful.com:8443/files/a.png',
+      'https://api.printful.com/store/products',
+      'javascript:alert(1)',
+    ]) {
+      expect(__testables.parseStoreImageSource(bad)).toBeNull();
+    }
+  });
 });

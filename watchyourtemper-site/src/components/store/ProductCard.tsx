@@ -1,4 +1,5 @@
 import React from 'react';
+import { fallBackToSource, storeImage } from '../../lib/storeApi';
 import type { StoreProduct } from '../../types/store';
 
 type Props = {
@@ -14,7 +15,7 @@ const ProductCard: React.FC<Props> = ({ product, onSelect }) => {
     <article className="store-card" aria-label={product.title}>
       {product.image ? (
         <div className="store-image-wrap">
-          <img className="store-image" src={product.image} alt={product.title} loading="lazy" />
+          <img className="store-image" src={storeImage(product.image)} alt={product.title} loading="lazy" onError={fallBackToSource(product.image)} />
         </div>
       ) : (
         <div className="store-image-placeholder">IMAGE COMING SOON</div>
@@ -26,8 +27,8 @@ const ProductCard: React.FC<Props> = ({ product, onSelect }) => {
         <p className="store-product-price">From {product.variants[0]?.currency || 'USD'} {minPrice.toFixed(2)}</p>
       </div>
 
-      <button className="store-buy-btn" type="button" onClick={() => onSelect(product)}>
-        <span className="btn-label">Select options</span>
+      <button className="store-select-btn text-link" type="button" onClick={() => onSelect(product)}>
+        Select options
       </button>
     </article>
   );

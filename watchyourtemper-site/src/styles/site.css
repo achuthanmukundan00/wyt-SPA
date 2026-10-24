@@ -1,0 +1,282 @@
+@font-face { font-family: "Space Grotesk"; src: url("/fonts/space-grotesk/space-grotesk-400.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Space Grotesk"; src: url("/fonts/space-grotesk/space-grotesk-500.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "Space Grotesk"; src: url("/fonts/space-grotesk/space-grotesk-600.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+
+/* The same system as the PRESSURE TEST site, whose engine shows this one.
+   Two sizes on the whole site: text for everything, display for the few lines
+   that carry a page. Text is 20px on a desktop, 5 of the tube's 4px
+   scanlines; line heights and gaps are whole scanlines. */
+:root {
+  --text: clamp(1rem, .75rem + .55vw, 1.25rem);
+  --display: clamp(2.25rem, 1rem + 3.8vw, 4.5rem);
+  --line-gap: round(calc(var(--text) * 1.4), 4px);
+  --gutter: clamp(1rem, 3.5vw, 4rem);
+  --col-gap: clamp(1rem, 2vw, 2.5rem);
+  --section: clamp(4rem, 8vw, 8rem);
+  --paper: #080909;
+  /* The tube's scanlines and grille take about a third of the light, so the
+     greys are brighter than flat glass would need. */
+  --ink: #f3f3ee;
+  --muted: #bdbdb6;
+  --line: #ffffff32;
+  --field: #151717;
+  /* 3x4 px of scanline and grille, as a tile: Firefox repaints repeating
+     gradients this fine on every scroll frame. */
+  --scanline-mask: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAYAAABLLYUHAAAAFUlEQVR42mP4jwAvGNA5j6H4PAoHAMzTLtP/jyJ3AAAAAElFTkSuQmCC") 0 0 / 3px 4px repeat;
+  --scanlines: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAYAAABLLYUHAAAAFElEQVR42mNgQABxBnSODBQboHAADvEA/zJ1SMAAAAAASUVORK5CYII=") 0 0 / 3px 4px repeat;
+  color-scheme: only dark;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); scroll-behavior: smooth; scroll-padding: 2rem 0 6rem; }
+/* No ligatures: the screen draws type a letter at a time, where the page set it.
+   Weight 500 keeps strokes wider than a scanline gap. */
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 var(--text)/1.4 'Space Grotesk', sans-serif; line-height: round(var(--text) * 1.4, 4px); letter-spacing: .01em; font-variant-ligatures: none; min-width: 320px; }
+[hidden] { display: none !important; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .18em; }
+button, input, select, summary, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+button, summary { cursor: pointer; }
+summary { list-style: none; }
+summary::-webkit-details-marker { display: none; }
+button { background: none; border: 0; padding: 0; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+figure, h1, h2, h3, h4, p, dl, dd, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+h1, h2, h3, h4 { font-size: var(--text); font-weight: inherit; }
+p + p { margin-top: .6em; margin-top: round(.6em, 4px); }
+img { display: block; max-width: 100%; height: auto; }
+a, button, summary { touch-action: manipulation; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: min(.2em, .375rem); }
+/* Hidden text is pinned to its box's corner so it never takes part in line breaking. */
+.sr-only, .visually-hidden { position: absolute !important; top: 0; left: 0; width: 1px !important; height: 1px !important; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip-link { position: fixed; top: calc(1rem + var(--crt-inset, 0px)); left: calc(1rem + var(--crt-inset, 0px)); z-index: 40; padding: .4em .6em; background: var(--paper); transform: translateY(-300%); }
+.skip-link:focus { transform: none; }
+.site { position: relative; min-height: 100svh; overflow: clip; }
+
+/* Display size: the line that opens a page or a section. Its side bearing is
+   pulled back so big letters stand on the edge of the text under them. */
+.display, .block__name, .store-status-card h1 {
+  font-size: var(--display); font-weight: 500; line-height: .95; line-height: round(var(--display) * .95, 4px); letter-spacing: -.04em; text-wrap: balance; margin-left: -.05em;
+}
+.text-link { display: inline-block; padding-block: .25em; text-wrap: balance; text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .2em; }
+.text-link:hover { text-decoration-thickness: .12em; }
+
+/* Entry: black, the wordmark and the one way in. "feed the machine" keeps the
+   bottom left, the controls the bottom right. */
+.threshold-entry { position: relative; min-height: max(36rem, 100svh); display: flex; flex-direction: column; padding: clamp(1rem, 3vw, 2.5rem) var(--gutter) clamp(5.5rem, 8vw, 7rem); }
+.threshold-mark { align-self: center; width: min(78vw, 60rem); margin-block: auto; padding: 2rem 0; }
+.threshold-mark img { width: 100%; }
+.enter { display: inline-flex; align-items: baseline; gap: .25em; }
+
+/* Every page but home opens on the wordmark, which leads back home. */
+.masthead { padding: calc(clamp(1rem, 3vw, 2.5rem) + var(--crt-inset, 0px)) var(--gutter) 0; }
+.masthead a { display: inline-block; }
+.masthead img { width: clamp(10rem, 20vw, 17rem); }
+
+/* Content: twelve columns, everything flush left on a column line. A section
+   opens with its title; what answers it starts halfway across, its last line
+   on the title or list it answers. */
+.content, .site-footer { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); padding-inline: var(--gutter); }
+.content { padding-top: var(--section); }
+.masthead + .content { padding-top: calc(var(--section) * .6); }
+.content > * { grid-column: 1 / -1; }
+.block { display: grid; grid-template-columns: subgrid; align-content: start; padding-bottom: var(--section); }
+.block__name { grid-column: 1 / -1; margin-bottom: var(--line-gap); }
+.answer { grid-column: 7 / -1; align-self: end; align-self: last baseline; color: var(--muted); }
+.answer .text-link { margin-top: .3em; color: var(--ink); }
+.answer p { text-wrap: balance; }
+
+/* Listen: the platforms, a line each, mark first. */
+.channels { grid-column: 1 / span 6; }
+.channel { display: flex; align-items: center; gap: .6em; padding-block: .35em; }
+.channel-icon { width: 1.4em; height: 1.4em; object-fit: contain; flex: none; }
+.channel-name { min-width: 0; }
+
+/* PRESSURE TEST: the poster as a sleeve, the series beside it. */
+.related__poster { grid-column: 1 / span 5; }
+.related__poster img { width: 100%; }
+.elsewhere__links { grid-column: 1 / span 6; }
+.elsewhere__links a { display: inline-block; padding-block: .25em; }
+
+/* Store */
+.store-toolbar { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: end; gap: .6em 2em; }
+.store-pref { display: grid; gap: .2em; }
+.store-pref > span:first-child { color: var(--muted); }
+.store-cart-open-btn { margin-left: auto; }
+.store-state { grid-column: 1 / -1; padding-bottom: var(--section); color: var(--muted); }
+.store-state-error { color: var(--ink); }
+.store-grid { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; row-gap: var(--section); padding-bottom: var(--section); }
+/* Cards in a row share a height, so prices and buttons sit on one line. */
+.store-card { grid-column: span 6; display: flex; flex-direction: column; }
+.store-image-wrap { aspect-ratio: 1; background: #d9d9d4; }
+.store-image { width: 100%; height: 100%; object-fit: cover; }
+.store-image-placeholder { aspect-ratio: 1; display: flex; align-items: flex-end; padding: .5em 0; color: var(--muted); }
+.store-card-body { flex: 1; display: flex; flex-direction: column; padding-top: var(--line-gap); }
+.store-product-description { margin-top: .3em; color: var(--muted); overflow-wrap: anywhere; }
+.store-product-price { margin-top: auto; padding-top: var(--line-gap); font-variant-numeric: tabular-nums; }
+.store-select-btn { align-self: flex-start; }
+.store-support-panel { grid-column: 1 / -1; }
+.store-support-block { grid-column: 1 / span 6; }
+.store-support-block + .store-support-block { grid-column: 7 / -1; }
+.store-support-eyebrow { margin-bottom: .3em; }
+.store-support-copy { color: var(--muted); }
+.store-support-link, .store-support-inline-link { text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .2em; }
+.store-support-link { display: inline-block; margin-top: .3em; padding-block: .25em; }
+
+/* Fields: a filled box (the screen draws uniform borders and fills) with the
+   platform's own drawing turned off, since the screen cannot see it. */
+input, select { appearance: none; border-radius: 0; }
+.store-checkout-form input, .select select { width: 100%; min-height: 2.75rem; padding: .45em .6em; background: var(--field); border: 1px solid #ffffff1f; color: var(--ink); caret-color: var(--ink); }
+.store-checkout-form input::placeholder { color: #8f8f89; }
+.select { position: relative; display: block; min-width: 9em; }
+.select select { padding-right: 2em; cursor: pointer; }
+.select__mark { position: absolute; right: .6em; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); }
+
+/* Layers over the page: under the CRT screen (z-index 50) and its flat glass
+   (42), over the site controls (35). Closed, they have no box at all. */
+.store-cart-backdrop { position: fixed; inset: 0; z-index: 36; background: #080909d9; }
+.store-cart { position: fixed; top: 0; right: 0; bottom: 0; z-index: 37; width: min(30rem, 100vw); display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--line); padding: calc(var(--gutter) * .6 + var(--crt-inset, 0px)); padding-left: calc(var(--gutter) * .6); }
+.store-cart-backdrop:not(.is-open), .store-cart:not(.is-open) { display: none; }
+.store-cart header { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: var(--line-gap); }
+.store-cart header h3 { font-size: var(--display); line-height: 1; letter-spacing: -.04em; }
+.store-cart header button, .store-modal-close { display: inline-flex; align-items: center; justify-content: center; min-width: 2.75rem; min-height: 2.75rem; }
+.close-mark { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.store-cart-list { flex: 1; overflow: auto; display: grid; align-content: start; gap: var(--line-gap); }
+.store-cart-line { display: grid; grid-template-columns: 5.5em minmax(0, 1fr); gap: .2em .8em; align-items: start; }
+.store-cart-line-total { grid-column: 2; }
+.store-cart-line img, .store-cart-line .store-image-placeholder { width: 100%; aspect-ratio: 1; object-fit: cover; background: #d9d9d4; }
+.store-cart-line-body p { color: var(--muted); }
+.store-cart-line-total, .store-cart-summary strong { font-variant-numeric: tabular-nums; }
+.store-cart footer { padding-top: var(--line-gap); }
+.store-cart-summary { display: flex; justify-content: space-between; margin-bottom: .8em; }
+.store-text-link { text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .2em; color: var(--muted); padding-block: .25em; }
+.store-qty { display: inline-flex; align-items: center; gap: .4em; margin-top: .3em; }
+.store-qty button { min-width: 2.25rem; min-height: 2.25rem; background: var(--field); border: 1px solid #ffffff1f; }
+.store-qty span { min-width: 1.5em; text-align: center; font-variant-numeric: tabular-nums; }
+/* Actions that spend money are solid: the one thing on a layer that is filled. */
+.store-checkout-btn, .store-buy-btn { display: block; width: 100%; min-height: 3rem; padding: .6em 1em; background: var(--ink); color: var(--paper); text-align: center; }
+.store-checkout-btn:hover, .store-buy-btn:hover { background: #ffffff; }
+
+.store-modal-backdrop { position: fixed; inset: 0; z-index: 38; display: flex; align-items: center; justify-content: center; padding: calc(var(--gutter) * .6 + var(--crt-inset, 0px)); background: #080909eb; }
+.store-modal { position: relative; width: min(68rem, 100%); max-height: 100%; overflow: auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--col-gap); padding: calc(var(--gutter) * .6); background: var(--paper); border: 1px solid var(--line); }
+.store-modal-close { position: absolute; top: .4em; right: .4em; }
+.store-modal-media img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #d9d9d4; }
+.store-modal-body { display: flex; flex-direction: column; gap: var(--line-gap); padding-right: 2.75rem; }
+.store-modal-body h3, .store-checkout-panel h3 { font-size: var(--display); font-weight: 500; line-height: .95; letter-spacing: -.04em; text-wrap: balance; }
+.store-modal-price { font-variant-numeric: tabular-nums; }
+.store-modal-description { color: var(--muted); }
+.store-option-group > p { color: var(--muted); margin-bottom: .3em; }
+.store-option-row { display: flex; flex-wrap: wrap; gap: .4em; }
+.store-option-pill { min-height: 2.75rem; padding: .3em .8em; border: 1px solid var(--line); }
+.store-option-pill.is-selected { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.store-option-pill:disabled { text-decoration: line-through; }
+.store-buy-btn { margin-top: auto; }
+
+.store-checkout-modal { grid-template-columns: minmax(0, 1fr); }
+.store-checkout-panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--line-gap) var(--col-gap); align-items: start; padding-right: 2.75rem; }
+.store-checkout-panel > h3, .store-checkout-panel > .store-modal-description { grid-column: 1 / -1; }
+.store-checkout-summary { display: grid; gap: var(--line-gap); }
+.store-checkout-lines, .store-checkout-totals { display: grid; gap: .3em; }
+.store-checkout-line, .store-checkout-total-row { display: flex; justify-content: space-between; gap: 1em; }
+.store-checkout-line-copy { display: grid; }
+.store-checkout-line-meta, .store-checkout-note { color: var(--muted); }
+.store-checkout-line-price, .store-checkout-total-row strong { font-variant-numeric: tabular-nums; font-weight: inherit; }
+.store-checkout-total-row-strong { padding-top: .3em; }
+.store-checkout-note-error, .store-checkout-error { color: var(--ink); }
+.store-checkout-summary label, .store-checkout-form label { display: grid; gap: .2em; }
+.store-checkout-summary label > span:first-child, .store-checkout-form label > span:first-child { color: var(--muted); }
+.store-checkout-form { display: grid; gap: .6em; }
+.store-checkout-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .6em; }
+.store-checkout-form .store-checkout-btn { margin-top: .6em; }
+/* The toast keeps clear of the cart's buttons and the controls, at the top. */
+.store-toast { position: fixed; left: calc(1rem + var(--crt-inset, 0px)); top: calc(1rem + var(--crt-inset, 0px)); z-index: 39; padding: .4em .7em; background: var(--paper); border: 1px solid var(--line); }
+
+.store-status-page .content { min-height: 60svh; }
+.store-status-card { grid-column: 1 / span 8; padding-bottom: var(--section); }
+.store-status-eyebrow { color: var(--muted); margin-bottom: var(--line-gap); }
+.store-status-card h1 { margin-bottom: var(--line-gap); }
+.store-status-card > p:not(.store-status-eyebrow) { color: var(--muted); max-width: 36em; }
+.store-status-link { display: inline-block; width: auto; margin-top: calc(var(--line-gap) * 2); }
+
+/* Footer: who made it, then where to find the rest. */
+.site-footer { align-items: start; row-gap: .6em; row-gap: round(.6em, 4px); padding-block: 0 clamp(6rem, 12vw, 10rem); color: var(--muted); }
+.site-footer > * { margin: 0; }
+.site-footer > p { grid-column: 1 / span 6; }
+.site-footer__links { grid-column: 7 / -1; grid-row: 1 / span 3; display: flex; flex-direction: column; align-items: flex-start; gap: .3em; }
+.site-footer a { color: var(--ink); text-decoration: underline; text-decoration-thickness: .06em; text-underline-offset: .2em; }
+
+/* Controls */
+.site-controls { position: fixed; right: calc(1rem + var(--crt-inset, 0px)); bottom: calc(1rem + var(--crt-inset, 0px)); z-index: 35; display: flex; gap: .4rem; padding: .3rem; background: var(--paper); border: 1px solid var(--line); border-radius: .4rem; }
+.site-controls > button { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; border-radius: .2rem; }
+.site-controls > button svg, .audio-position summary svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.site-controls > button:hover, .audio-position summary:hover { background: var(--ink); color: var(--paper); }
+.site-controls > [data-crt-toggle][aria-pressed='false'] { color: var(--muted); }
+.audio-position { align-self: center; }
+.audio-position summary { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; border-radius: .2rem; }
+/* A closed panel has no box at all, or the screen would draw it. */
+.audio-position:not([open]) .audio-position__panel { display: none; }
+.audio-position__panel { position: absolute; right: 0; bottom: calc(100% + .75rem); width: min(34rem, calc(100vw - 2rem - 2 * var(--crt-inset, 0px))); padding: .5em .6em; background: var(--paper); border: 1px solid var(--line); }
+.audio-position__panel input { width: 100%; min-height: 2.75rem; accent-color: var(--ink); }
+#sound-status { position: fixed; right: calc(1rem + var(--crt-inset, 0px)); bottom: calc(5.25rem + var(--crt-inset, 0px)); z-index: 40; max-width: min(34rem, calc(100vw - 2rem - 2 * var(--crt-inset, 0px))); padding: .3em .5em; background: var(--paper); border: 1px solid var(--line); }
+#sound-status:empty { display: none; }
+
+/* CRT. With hardware WebGL2 the whole site is shown through one shader
+   (src/crt), on a canvas over the page, which keeps working underneath.
+   Otherwise, and while that screen starts or rests, the page shows itself
+   through the flat glass: static layers the compositor moves without
+   repainting. Nothing here filters page content. */
+.crt-screen { display: none; }
+html[data-screen] .crt-screen {
+  display: block; position: fixed; inset: 0; z-index: 50; width: 100%; height: 100%;
+  pointer-events: none; opacity: 0; transition: opacity .35s ease-out;
+}
+html[data-screen='on'] .crt-screen { opacity: 1; }
+/* The screen draws the page as it stands, so nothing on the page animates
+   under it: a transition would be drawn at its first frame. */
+html[data-screen] :not(.crt-screen), html[data-screen] ::before, html[data-screen] ::after { transition: none !important; animation: none !important; }
+html[data-screen='on'] [data-crt-window] { position: relative; z-index: 51; filter: brightness(.88); -webkit-mask: var(--scanline-mask); mask: var(--scanline-mask); clip-path: var(--crt-clip, none); }
+.crt-glass, .crt-raster { display: none; pointer-events: none; }
+html[data-crt='on'] body { text-shadow: -.4px 0 #ff505833, .4px 0 #4ba0ff33, 0 0 .55em #ecece724; }
+html[data-crt='on'] .site-controls { border-color: #ecece72e; background: var(--scanlines), #0c0d0d; box-shadow: inset 0 0 1.25rem #000000b3, 0 0 1.5rem #dce8ff0f; }
+html[data-crt='on'] .site-controls svg { filter: drop-shadow(0 0 .2rem #ecece759); }
+html[data-crt='on'] .crt-raster { display: block; position: sticky; top: 0; z-index: 3; height: 100vh; margin-bottom: -100vh; background: var(--scanlines); }
+html[data-crt='on'] .crt-glass {
+  display: block; position: fixed; inset: 0; z-index: 42;
+  border-radius: clamp(1rem, 2.4vw, 2.25rem);
+  box-shadow: 0 0 0 3rem var(--paper), inset 0 0 0 1px #dce8ff0f;
+  background:
+    radial-gradient(ellipse 55% 40% at 26% 16%, #dce8ff0b, transparent 70%),
+    radial-gradient(ellipse 110% 104% at 50% 50%, transparent 52%, #0000003d 78%, #000000a6 100%);
+}
+
+.no-script { padding: 3rem var(--gutter); }
+.no-script img { width: min(100%, 50rem); margin-bottom: 3rem; }
+.no-script nav { display: flex; flex-wrap: wrap; gap: 1rem 2rem; }
+
+@media (max-width: 48rem) {
+  .content, .site-footer { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .answer { grid-column: 1 / -1; margin-top: calc(var(--line-gap) * 2); }
+  .channels, .related__poster, .elsewhere__links, .store-card, .store-support-block, .store-support-block + .store-support-block,
+  .store-status-card, .site-footer > p, .site-footer__links { grid-column: 1 / -1; }
+  .related__poster { width: 80%; }
+  .store-support-block + .store-support-block { margin-top: calc(var(--line-gap) * 2); }
+  .store-cart-open-btn { margin-left: 0; }
+  .store-modal, .store-checkout-panel { grid-template-columns: minmax(0, 1fr); }
+  .store-modal-body, .store-checkout-panel { padding-right: 0; }
+  .store-modal-media { padding-right: 2.75rem; }
+  .site-footer__links { grid-row: auto; margin-top: 1em; }
+  .threshold-mark { width: 88%; }
+  .site-controls { right: calc(.75rem + var(--crt-inset, 0px)); bottom: calc(.75rem + var(--crt-inset, 0px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media (forced-colors: active) {
+  .crt-glass, .crt-raster, .crt-screen { display: none !important; }
+  .site-controls, .audio-position__panel, #sound-status, .store-cart, .store-modal, .store-toast { background: Canvas; color: CanvasText; border: 1px solid ButtonText; }
+  :focus-visible { outline-color: Highlight; }
+}
+@media print {
+  .crt-glass, .crt-raster, .crt-screen, .site-controls { display: none !important; }
+}

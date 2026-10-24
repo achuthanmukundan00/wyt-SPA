@@ -1,12 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import CartDrawer from '../components/store/CartDrawer';
+import CloseMark from '../components/CloseMark';
+import FieldSelect from '../components/FieldSelect';
+import Layer from '../components/Layer';
+import Masthead from '../components/Masthead';
+import SiteFooter from '../components/SiteFooter';
 import ProductCard from '../components/store/ProductCard';
 import ProductOptionsModal from '../components/store/ProductOptionsModal';
 import { useCart } from '../context/CartContext';
 import { useStorePreferences } from '../context/StorePreferencesContext';
 import { createCheckoutStart, fetchShippingQuote, fetchStoreProducts } from '../lib/storeApi';
 import type { ChargeSummary, ShippingRateOption, StoreProduct, StoreVariant } from '../types/store';
-import '../styles/index.css';
 
 const buildSupportHref = (supportEmail: string) => {
   if (!supportEmail) {
@@ -22,6 +26,9 @@ const buildSupportHref = (supportEmail: string) => {
 };
 
 const COUNTRIES_REQUIRING_STATE = new Set(['US', 'CA', 'AU']);
+
+// The series is always written PRESSURE TEST, whatever the catalogue says.
+const seriesName = (text: string) => text.replace(/\bpressure test\b/gi, 'PRESSURE TEST');
 
 const Store: React.FC = () => {
   const [products, setProducts] = useState<StoreProduct[]>([]);
@@ -51,7 +58,7 @@ const Store: React.FC = () => {
   });
 
   const { items, subtotal, totalQuantity, currency, addItem, removeItem, updateQuantity } = useCart();
-  const { countries, selectedCountry, selectedCurrency, setSelectedCountry, supportEmail } = useStorePreferences();
+  const { countries, currencies, selectedCountry, selectedCurrency, setSelectedCountry, setSelectedCurrency, supportEmail } = useStorePreferences();
   const supportHref = useMemo(() => buildSupportHref(supportEmail), [supportEmail]);
 
   useEffect(() => {
@@ -65,7 +72,7 @@ const Store: React.FC = () => {
 
       try {
           const loaded = await fetchStoreProducts(selectedCurrency);
-          setProducts(loaded);
+          setProducts(loaded.map((product) => ({ ...product, title: seriesName(product.title), description: seriesName(product.description) })));
       } catch (fetchError) {
         setError(fetchError instanceof Error ? fetchError.message : 'Unable to load products.');
       } finally {
@@ -308,17 +315,37 @@ const Store: React.FC = () => {
   };
 
   return (
-    <main className="store-page">
-      <header className="store-toolbar">
-        <p>OFFICIAL MERCH</p>
-        <button className="store-cart-open-btn" type="button" onClick={() => setIsCartOpen(true)}>
-          Cart ({totalQuantity})
-        </button>
-      </header>
+    <main className="site store-page">
+      <Masthead />
+      <div className="content">
+      <section className="block store-head" aria-labelledby="store-title">
+        <h1 className="block__name" id="store-title">Store</h1>
+        <div className="store-toolbar">
+          <label className="store-pref">
+            <span>Ship to</span>
+            <FieldSelect value={selectedCountry} onChange={(event) => setSelectedCountry(event.target.value)}>
+              {countries.map((country) => (
+                <option key={country.code} value={country.code}>{country.name}</option>
+              ))}
+            </FieldSelect>
+          </label>
+          <label className="store-pref">
+            <span>Currency</span>
+            <FieldSelect value={selectedCurrency} onChange={(event) => setSelectedCurrency(event.target.value)}>
+              {currencies.map((code) => (
+                <option key={code} value={code}>{code}</option>
+              ))}
+            </FieldSelect>
+          </label>
+          <button className="store-cart-open-btn text-link" type="button" onClick={() => setIsCartOpen(true)}>
+            Cart ({totalQuantity})
+          </button>
+        </div>
+      </section>
 
       {content}
 
-      <section className="store-support-panel" aria-label="Store policy and support">
+      <section className="block store-support-panel" aria-label="Store policy and support">
         <div className="store-support-block store-support-block-policy">
           <p className="store-support-eyebrow">Store Policy</p>
           <p className="store-support-copy">
@@ -343,7 +370,10 @@ const Store: React.FC = () => {
           </div>
         ) : null}
       </section>
+      </div>
+      <SiteFooter />
 
+      <Layer>
       <ProductOptionsModal
         product={activeProduct}
         open={isModalOpen}
@@ -380,7 +410,7 @@ const Store: React.FC = () => {
               onClick={() => setIsCheckoutModalOpen(false)}
               disabled={isCheckoutSubmitting}
             >
-              ×
+              <CloseMark />
             </button>
 
             <div className="store-checkout-panel">
@@ -395,7 +425,7 @@ const Store: React.FC = () => {
                         <div className="store-checkout-line-copy">
                           <span className="store-checkout-line-title">{item.productTitle}</span>
                           <span className="store-checkout-line-meta">
-                            {item.color} • {item.size} • Qty {item.quantity}
+                            {item.color}, {item.size}, qty {item.quantity}
                           </span>
                         </div>
                         <span className="store-checkout-line-price">
@@ -417,17 +447,17 @@ const Store: React.FC = () => {
                   {shippingOptions.length ? (
                     <label>
                       <span>Shipping option</span>
-                      <select
+                      <FieldSelect
                         value={selectedShippingRateId}
                         onChange={(event) => setSelectedShippingRateId(event.target.value)}
                         disabled={isCheckoutSubmitting}
                       >
                         {shippingOptions.map((option) => (
                           <option key={option.id} value={option.id}>
-                            {option.name} - {option.currency} {option.rate.toFixed(2)}
+                            {option.name}, {option.currency} {option.rate.toFixed(2)}
                           </option>
                         ))}
-                      </select>
+                      </FieldSelect>
                     </label>
                   ) : null}
                   {chargeSummary ? (
@@ -549,7 +579,7 @@ const Store: React.FC = () => {
                   </label>
                   <label>
                     <span>Country</span>
-                    <select
+                    <FieldSelect
                       value={checkoutForm.country}
                       onChange={(event) => updateCheckoutField('country', event.target.value)}
                       required
@@ -562,7 +592,7 @@ const Store: React.FC = () => {
                           {country.name}
                         </option>
                       ))}
-                    </select>
+                    </FieldSelect>
                   </label>
                 </div>
 
@@ -583,7 +613,9 @@ const Store: React.FC = () => {
         </div>
       ) : null}
 
-      {toast ? <div className="store-toast">{toast}</div> : null}
+      {/* Over a drawer or dialog the layer itself is the confirmation: the toast is only announced. */}
+      {toast ? <div className={`store-toast${isCartOpen || isModalOpen || isCheckoutModalOpen ? ' sr-only' : ''}`} role="status">{toast}</div> : null}
+      </Layer>
     </main>
   );
 };

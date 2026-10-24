@@ -26,3 +26,6 @@ dist-ssr
 
 .env
 .vercel
+
+# Disposable local design captures
+design-results/

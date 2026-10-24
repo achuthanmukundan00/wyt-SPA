@@ -375,6 +375,50 @@ const json = (data: unknown, init: ResponseInit = {}) =>
 
 const badRequest = (message: string, status = 400) => json({ error: message }, { status });
 
+// Product pictures come from Printful's CDN. The site shows everything through
+// a CRT drawn on a canvas, which may only draw same-origin pictures, so the
+// Worker passes them through: one host, https only, images only.
+const STORE_IMAGE_HOST = 'files.cdn.printful.com';
+const STORE_IMAGE_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'image/avif']);
+const STORE_IMAGE_MAX_BYTES = 15 * 1024 * 1024;
+
+const parseStoreImageSource = (value: string | null) => {
+  if (!value) return null;
+  try {
+    const source = new URL(value);
+    if (source.protocol !== 'https:' || source.hostname !== STORE_IMAGE_HOST || source.port || source.username || source.password) return null;
+    return source;
+  } catch {
+    return null;
+  }
+};
+
+const handleStoreImage = async (request: Request) => {
+  const source = parseStoreImageSource(new URL(request.url).searchParams.get('src'));
+  if (!source) {
+    return badRequest('Unsupported image source.');
+  }
+
+  // Redirects are not followed: a 3xx is not ok, so it is refused, and the
+  // proxy never leaves Printful's host.
+  const upstream = await fetch(source.toString(), { redirect: 'manual' });
+  const type = (upstream.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
+  const length = Number(upstream.headers.get('content-length') || 0);
+  if (!upstream.ok || !STORE_IMAGE_TYPES.has(type) || length > STORE_IMAGE_MAX_BYTES) {
+    return badRequest('Image unavailable.', 502);
+  }
+
+  return new Response(request.method === 'HEAD' ? null : upstream.body, {
+    headers: {
+      'content-type': type,
+      // Printful file URLs are content-addressed, so a copy never goes stale.
+      'cache-control': 'public, max-age=604800, immutable',
+      'x-content-type-options': 'nosniff',
+      'content-security-policy': "default-src 'none'; sandbox",
+    },
+  });
+};
+
 const nowIso = () => new Date().toISOString();
 
 const safeJsonParse = <T>(rawBody: string) => {
@@ -1934,6 +1978,10 @@ const handleApiRequest = async (request: Request, env: Env) => {
     return json({ products });
   }
 
+  if ((request.method === 'GET' || request.method === 'HEAD') && url.pathname === '/api/store/image') {
+    return handleStoreImage(request);
+  }
+
   if (request.method === 'GET' && url.pathname === '/api/store/preferences') {
     return handleStorePreferences(request, env);
   }
@@ -2165,5 +2213,6 @@ export const __testables = {
   parseCheckoutIntentInput,
   parseCheckoutStartInput,
   parseShippingQuoteInput,
+  parseStoreImageSource,
   resolveNextStatus,
 };

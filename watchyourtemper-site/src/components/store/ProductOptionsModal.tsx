@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { fallBackToSource, storeImage } from '../../lib/storeApi';
 import type { StoreProduct, StoreVariant } from '../../types/store';
 import QuantitySelector from './QuantitySelector';
+import CloseMark from '../CloseMark';
 
 type Props = {
   product: StoreProduct | null;
@@ -84,11 +86,11 @@ const ProductOptionsModal: React.FC<Props> = ({ product, open, onClose, onAddToC
     <div className="store-modal-backdrop" role="presentation" onClick={onClose}>
       <section className="store-modal" role="dialog" aria-modal="true" aria-label={`Select options for ${product.title}`} onClick={(event) => event.stopPropagation()}>
         <button className="store-modal-close" type="button" aria-label="Close options" onClick={onClose}>
-          ×
+          <CloseMark />
         </button>
 
         <div className="store-modal-media">
-          {product.image ? <img src={product.image} alt={product.title} /> : <div className="store-image-placeholder">IMAGE COMING SOON</div>}
+          {product.image ? <img src={storeImage(product.image)} alt={product.title} onError={fallBackToSource(product.image)} /> : <div className="store-image-placeholder">IMAGE COMING SOON</div>}
         </div>
 
         <div className="store-modal-body">

@@ -1,8 +1,29 @@
+import type React from 'react';
 import type { ChargeSummary, ShippingRateOption, CheckoutIntent, StoreProduct } from '../types/store';
 
 const configuredApiBase = import.meta.env.VITE_API_BASE_URL?.trim() || '';
 const isLocalApiBase = /^(https?:\/\/)?(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configuredApiBase);
 const API_BASE = import.meta.env.PROD && isLocalApiBase ? '' : configuredApiBase;
+
+// Printful's pictures are passed through the Worker (/api/store/image), so they
+// are same-origin and the CRT screen can draw them like the rest of the page.
+export const storeImage = (url: string) => {
+  try {
+    const source = new URL(url);
+    if (source.protocol === 'https:' && source.hostname === 'files.cdn.printful.com') {
+      return `${API_BASE}/api/store/image?src=${encodeURIComponent(source.toString())}`;
+    }
+  } catch {
+    /* Not an absolute URL: used as it is. */
+  }
+  return url;
+};
+
+// If the pass-through ever fails, the picture loads from Printful directly
+// (shown through the screen as a window instead of drawn on it).
+export const fallBackToSource = (url: string) => (event: React.SyntheticEvent<HTMLImageElement>) => {
+  if (event.currentTarget.src !== url) event.currentTarget.src = url;
+};
 
 const parseJson = async <T>(response: Response): Promise<T> => {
   const payload = (await response.json()) as T & { error?: string };

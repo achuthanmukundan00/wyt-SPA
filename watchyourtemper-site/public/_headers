@@ -1,0 +1,7 @@
+# Written by scripts/sync-pressure-test.mjs from the PRESSURE TEST header template.
+/pressure-test/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'sha256-UP0QZg7irvSMvOBz9mH2PIIE28+57UiavRfeVea0l3g=' 'sha256-TApgzq+L+vo6ZL7R3zB/pjibSWr04j37ajV9ghuBeh8='; img-src 'self' data: https://files.cdn.printful.com; font-src 'self' data:; media-src 'self'; connect-src 'self' https://watchyourtemper.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), autoplay=(self "https://www.youtube-nocookie.com")
+  X-Frame-Options: DENY
