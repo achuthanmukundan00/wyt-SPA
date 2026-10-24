@@ -23,7 +23,10 @@ fi
 
 WRANGLER="$ROOT/watchyourtemper-site/node_modules/.bin/wrangler"
 [[ -x $WRANGLER ]] || { echo "Run npm ci in watchyourtemper-site/ first." >&2; exit 1; }
-if ! "$WRANGLER" whoami 2>/dev/null | grep -q "$ACCOUNT_ID"; then
+# Output is captured before matching: with pipefail, `| grep -q` would stop
+# reading early and fail the check on the writer's broken pipe.
+WHO=$("$WRANGLER" whoami 2>/dev/null || true)
+if [[ $WHO != *"$ACCOUNT_ID"* ]]; then
   echo "Wrangler is not logged in to the watchyourtemper account ($ACCOUNT_ID)." >&2
   echo "Sign in to dash.cloudflare.com as hello.watchyourtemper@gmail.com, then run:" >&2
   echo "  $WRANGLER logout && $WRANGLER login" >&2
@@ -49,7 +52,10 @@ fi
 
 # The live site must now be this build.
 sleep 5
-curl -fsS "https://watchyourtemper.com/?deploy=$COMMIT" | grep -q "$BUNDLE" || { echo "watchyourtemper.com is not serving $BUNDLE yet. Check it." >&2; exit 1; }
-curl -fsS https://watchyourtemper.com/api/health | grep -q '"ok":true' || { echo "The live API health check failed." >&2; exit 1; }
-curl -fsS https://watchyourtemper.com/pressure-test/ | grep -q "<title>PRESSURE TEST" || { echo "PRESSURE TEST is not live at /pressure-test/." >&2; exit 1; }
+HOME_PAGE=$(curl -fsS "https://watchyourtemper.com/?deploy=$COMMIT" || true)
+[[ $HOME_PAGE == *"$BUNDLE"* ]] || { echo "watchyourtemper.com is not serving $BUNDLE yet. Check it." >&2; exit 1; }
+HEALTH=$(curl -fsS https://watchyourtemper.com/api/health || true)
+[[ $HEALTH == *'"ok":true'* ]] || { echo "The live API health check failed." >&2; exit 1; }
+PRESSURE_TEST=$(curl -fsS https://watchyourtemper.com/pressure-test/ || true)
+[[ $PRESSURE_TEST == *"<title>PRESSURE TEST"* ]] || { echo "PRESSURE TEST is not live at /pressure-test/." >&2; exit 1; }
 echo "Deployed $COMMIT to watchyourtemper.com and checked the live site."
