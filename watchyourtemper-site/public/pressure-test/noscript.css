@@ -1,0 +1,13 @@
+/* Without JavaScript the bands cannot open and fold, so every one is open, one
+   after another: the page scrolls like an ordinary document. Linked from a
+   <noscript> in index.html, so it applies only then; it overrides the folded
+   state outright, whichever stylesheet the browser reads last. */
+html, body { height: auto !important; overflow: visible !important; }
+#mockup { height: auto !important; display: block !important; overflow: visible !important; }
+#mockup .band { display: flex !important; min-height: 100vh; min-height: 100svh; visibility: visible !important; }
+#mockup .band > .band__body { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+#mockup .band__strip { display: none !important; }
+#mockup .b-entry > .band__body { min-height: 100vh; min-height: 100svh; }
+#mockup .band .plate img { filter: brightness(var(--grade, .7)) saturate(.95) !important; }
+#mockup .band .plate::after { background: linear-gradient(#080909cc, transparent var(--strip), transparent 40%, #080909e0 82%, var(--paper)), linear-gradient(to right, #08090999, transparent 62%) !important; }
+#mockup .s-playback .video-archive__player { display: none !important; }
