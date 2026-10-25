@@ -9,5 +9,5 @@ html, body { height: auto !important; overflow: visible !important; }
 #mockup .band__strip { display: none !important; }
 #mockup .b-entry > .band__body { min-height: 100vh; min-height: 100svh; }
 #mockup .band .plate img { filter: brightness(var(--grade, .7)) saturate(.95) !important; }
-#mockup .band .plate::after { background: linear-gradient(#080909cc, transparent var(--strip), transparent 40%, #080909e0 82%, var(--paper)), linear-gradient(to right, #08090999, transparent 62%) !important; }
+#mockup .band .plate::after { background: linear-gradient(#080909cc, transparent 12%, transparent 28%, #080909b8 52%, #080909f0 74%, var(--paper)), linear-gradient(to right, #080909a6, #08090933 55%, #08090966) !important; }
 #mockup .s-playback .video-archive__player { display: none !important; }
